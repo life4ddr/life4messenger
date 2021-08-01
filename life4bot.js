@@ -68,14 +68,14 @@ bot.on('ready', () => {
 
     }
 
-        //DISCORD @ TEST
-        if(msg.includes(bot.user.toString()) && msg.includes('test dis')) {
-          if (message.channel.id === '596168285477666832')
-          {
-            wait.launchFiber(getAppTestSequenceDiscord,message);
-    
-          }
-        }
+    //DISCORD @ TEST
+    if(msg.includes(bot.user.toString()) && msg.includes('test dis')) {
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(getAppTestSequenceDiscord,message);
+
+      }
+    }
 
     //TURN ON
     if(msg.includes(bot.user.toString()) && msg.includes('turn on')) {
@@ -88,9 +88,38 @@ bot.on('ready', () => {
       
     }
 
+    //CHECK QUEUE
+    if(msg.includes(bot.user.toString()) && msg.includes('check queue')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"QUEUE");
+
+      }
+    }
+
+    //CHECK PLAYERS
+    if(msg.includes(bot.user.toString()) && msg.includes('check players')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"PLAYERS");
+
+      }
+    }
+
+
+    //CHECK TRIALS
+    if(msg.includes(bot.user.toString()) && msg.includes('check trials')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TRIALS");
+
+      }
+    }
 
     //TURN OFF
-    //TURN ON
     if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
 
       if (message.channel.id === '596168285477666832')
@@ -98,7 +127,6 @@ bot.on('ready', () => {
         wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
 
       }
-
     }
 
     //PLAYER LOOKUP
@@ -176,6 +204,18 @@ function discordSendStatusMessage(message,status,callback)
     else if (status == "OFF")
     {
       messagetext = "Status is currently " + status +"! The bot is not running!";
+    }
+    else if (status == "QUEUE")
+    {
+      messagetext = "Status is currently " + status +"! The bot is checking the queue for new updates and then sending messages";
+    }
+    else if (status == "PLAYERS")
+    {
+      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for player updates!!";
+    }
+    else if (status == "TRIALS")
+    {
+      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
     }
     else if (status == "ERROR")
     {
@@ -323,12 +363,25 @@ function discordSendStatusChangeMessage(message,status,callback)
 
     if (status == "ON")
     {
-      messagetext = "The bot has been activated! It will run every 10 minutes.";
+      messagetext = "This doesn't really do anything anymore! Please use 'check trials', 'check players', or 'check queue' to do a thing!";
     }
     else if (status == "OFF")
     {
-      messagetext = "The bot has been deactivated! Go ahead and make your spreadsheet updates!";
+      messagetext = "The bot has been deactivated! ";
     }
+    else if (status == "TRIALS")
+    {
+      messagetext = "The bot will now check for new trials!";
+    }
+    else if (status == "PLAYERS")
+    {
+      messagetext = "The bot will now check for new players!";
+    }
+    else if (status == "QUEUE")
+    {
+      messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
+    }
+
 
     message.reply(messagetext);
 
