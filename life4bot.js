@@ -53,7 +53,7 @@ bot.on('ready', () => {
 
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
-        message.reply('Here are my commands!\n status = get status \n turn on = enable the bot \n turn off = disable the bot');
+        message.reply('Here are my commands!\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n turn off = disable the bot');
     }
     
 
