@@ -119,6 +119,27 @@ bot.on('ready', () => {
       }
     }
 
+    //TOURNEY SYNC 
+    if(msg.includes(bot.user.toString()) && msg.includes('rr sync')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYSYNC");
+
+      }
+    }
+    
+
+      //TOURNEY ANNOUNCE 
+      if(msg.includes(bot.user.toString()) && msg.includes('rr announce')) {
+
+        if (message.channel.id === '596168285477666832')
+        {
+          wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEY ANNOUNCE");
+  
+        }
+      }
+
     //TURN OFF
     if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
 
@@ -216,6 +237,14 @@ function discordSendStatusMessage(message,status,callback)
     else if (status == "TRIALS")
     {
       messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
+    }
+    else if (status == "TOURNEYSYNC")
+    {
+      messagetext = "Status is currently " + status +"! The bot is syncing the spreadsheets";
+    }
+    else if (status == "TOURNEYANNOUNCE")
+    {
+      messagetext = "Status is currently " + status +"! The bot is going to announce tournament scores ";
     }
     else if (status == "ERROR")
     {
@@ -380,6 +409,14 @@ function discordSendStatusChangeMessage(message,status,callback)
     else if (status == "QUEUE")
     {
       messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
+    }
+    else if (status == "TOURNEYSYNC")
+    {
+      messagetext = "spreadsheet sync test";
+    }
+    else if (status == "TOURNEYANNOUNCE")
+    {
+      messagetext = "rr announcement test";
     }
 
 
