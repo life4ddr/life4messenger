@@ -135,7 +135,7 @@ bot.on('ready', () => {
 
         if (message.channel.id === '596168285477666832')
         {
-          wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEY ANNOUNCE");
+          wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYANNOUNCE");
   
         }
       }
