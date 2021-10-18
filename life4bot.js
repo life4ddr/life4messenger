@@ -53,7 +53,7 @@ bot.on('ready', () => {
 
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
-        message.reply('Here are my commands!\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n turn off = disable the bot');
+        message.reply('Here are my commands!\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n rr qualifier sync - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
     
 
@@ -128,7 +128,16 @@ bot.on('ready', () => {
 
       }
     }
-    
+
+    //TOURNEY QUALIFIER SYNC
+    if(msg.includes(bot.user.toString()) && msg.includes('rr qualifier sync')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYQUALSYNC");
+
+      }
+    }
 
       //TOURNEY ANNOUNCE 
       if(msg.includes(bot.user.toString()) && msg.includes('rr announce')) {
