@@ -270,7 +270,7 @@ function getAppStatusFromDB(callback){
 
   setTimeout( function(){
 
-    var appStatus = "SELECT varValue from life4Controls where varName='appStatus'";
+    var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
       callback(null,results)
@@ -382,7 +382,7 @@ function changeAppStatus(status,callback){
 
   setTimeout( function(){
 
-    var appStatus = "UPDATE life4Controls set varValue = '"+status+"' where varName='appStatus'";
+    var appStatus = "UPDATE life4controls set varValue = '"+status+"' where varName='appStatus'";
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
       callback(null,results)
