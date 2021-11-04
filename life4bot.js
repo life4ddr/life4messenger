@@ -53,7 +53,7 @@ bot.on('ready', () => {
 
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
-        message.reply('Here are my commands!\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
+        message.reply('Here are my commands!\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
     
 
@@ -69,10 +69,19 @@ bot.on('ready', () => {
     }
 
     //DISCORD @ TEST
-    if(msg.includes(bot.user.toString()) && msg.includes('test dis')) {
+    if(msg.includes(bot.user.toString()) && msg.includes('do crimes')) {
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(getAppTestSequenceDiscord,message);
+        wait.launchFiber(changeAppStatusSequenceDiscord,message,"NEWQUEUE");
+
+      }
+    }
+
+    //GET NUMBER OF NEW SUBMISSIONS IN QUEUE
+    if(msg.includes(bot.user.toString()) && msg.includes('get submissions')) {
+      if (message.channel.id === '596168285477666832')
+      {
+        wait.launchFiber(getAllSubmissionsInForms,message,"SUBMISSIONS");
 
       }
     }
@@ -247,6 +256,10 @@ function discordSendStatusMessage(message,status,callback)
     {
       messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
     }
+    else if (status == "SUBMISSIONS")
+    {
+      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
+    }
     else if (status == "TOURNEYSYNC")
     {
       messagetext = "Status is currently " + status +"! The bot is syncing the spreadsheets";
@@ -273,6 +286,38 @@ function getAppStatusFromDB(callback){
     var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
+      callback(null,results)
+
+    });
+    
+}, 25);
+
+}
+
+function getSubmissionCount(callback){
+
+  setTimeout( function(){
+
+    var appStatus = "select COUNT(*) as 'subcount' from life4_devel.wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
+    connection.query(appStatus, function (error, results) {
+      if (error) throw error;
+      callback(null,results)
+
+    });
+    
+}, 25);
+
+}
+
+function updatedSubmissionToReported(callback){
+
+  setTimeout( function(){
+
+    console.log("updating");
+    var appStatus = "update life4_devel.wp_kikf_postmeta set meta_value='submission_reported' where meta_key='state' and meta_value='submitted'";
+    connection.query(appStatus, function (error, results) {
+      if (error) throw error;
+      console.log("gonna update");
       callback(null,results)
 
     });
@@ -312,6 +357,23 @@ function getAppStatusSequenceDiscord(message)
   wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
 };
 
+function getAllSubmissionsInForms(message)
+{
+  connection = mysql.createConnection({
+    host     : process.env.MYSQLHOST,
+    user     : process.env.MYSQLUSER,
+    password : process.env.MYSQLPW,
+    database : process.env.MYSQLPLAYERDB
+  });
+  connection.connect();
+
+  console.log("Checking submissions");
+  var currentStatus = wait.for(getSubmissionCount);
+  console.log(currentStatus[0].subcount);
+  var updatestate = wait.for(updatedSubmissionToReported);
+  wait.for(discordSendSubmissionMessage,message,currentStatus[0].subcount);
+
+};
 
 //
 // TEST
@@ -393,6 +455,18 @@ function changeAppStatus(status,callback){
 
 }
 
+function discordSendSubmissionMessage(message,countofgoods,callback)
+{
+  setTimeout( function(){
+
+    var messagetext = "There are " + countofgoods + " in the form queue ready to be reviewed!";
+
+    message.reply(messagetext);
+
+}, 750);
+}
+
+
 function discordSendStatusChangeMessage(message,status,callback)
 {
   setTimeout( function(){
@@ -419,6 +493,10 @@ function discordSendStatusChangeMessage(message,status,callback)
     {
       messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
     }
+    else if (status == "NEWQUEUE")
+    {
+      messagetext = "Looks like someone is doing crimes.";
+    }
     else if (status == "TOURNEYSYNC")
     {
       messagetext = "spreadsheet sync test";
@@ -427,7 +505,6 @@ function discordSendStatusChangeMessage(message,status,callback)
     {
       messagetext = "rr announcement test";
     }
-
 
     message.reply(messagetext);
 
