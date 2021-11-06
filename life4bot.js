@@ -256,10 +256,6 @@ function discordSendStatusMessage(message,status,callback)
     {
       messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
     }
-    else if (status == "SUBMISSIONS")
-    {
-      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
-    }
     else if (status == "TOURNEYSYNC")
     {
       messagetext = "Status is currently " + status +"! The bot is syncing the spreadsheets";
