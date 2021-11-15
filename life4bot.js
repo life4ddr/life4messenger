@@ -53,7 +53,7 @@ bot.on('ready', () => {
 
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
-        message.reply('Here are my commands!\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - begin to message any updates in the queue \n check players - check the players spreadsheet for any updates \n check trials - check the trials spreadsheets for any updates \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
+        message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
     
 
@@ -238,7 +238,7 @@ function discordSendStatusMessage(message,status,callback)
 
     if (status == "ON")
     {
-      messagetext = "Status is currently " + status +"! The bot is running!";
+      messagetext = "Status is currently " + status +"! The bot is running and looking for approved forms!";
     }
     else if (status == "OFF")
     {
@@ -246,15 +246,15 @@ function discordSendStatusMessage(message,status,callback)
     }
     else if (status == "QUEUE")
     {
-      messagetext = "Status is currently " + status +"! The bot is checking the queue for new updates and then sending messages";
+      messagetext = "Status is currently " + status +"! This status is no longer used!";
     }
     else if (status == "PLAYERS")
     {
-      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for player updates!!";
+      messagetext = "Status is currently " + status +"! This status is no longer used!";
     }
     else if (status == "TRIALS")
     {
-      messagetext = "Status is currently " + status +"! The bot is scanning the spreadsheet for new trial scores!";
+      messagetext = "Status is currently " + status +"! This status is no longer used!";
     }
     else if (status == "TOURNEYSYNC")
     {
@@ -294,7 +294,7 @@ function getSubmissionCount(callback){
 
   setTimeout( function(){
 
-    var appStatus = "select COUNT(*) as 'subcount' from life4_devel.wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
+    var appStatus = "select COUNT(*) as 'subcount' from wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
       callback(null,results)
@@ -310,7 +310,7 @@ function updatedSubmissionToReported(callback){
   setTimeout( function(){
 
     console.log("updating");
-    var appStatus = "update life4_devel.wp_kikf_postmeta set meta_value='submission_reported' where meta_key='state' and meta_value='submitted'";
+    var appStatus = "update wp_kikf_postmeta set meta_value='submission_reported' where meta_key='state' and meta_value='submitted'";
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
       console.log("gonna update");
@@ -471,7 +471,7 @@ function discordSendStatusChangeMessage(message,status,callback)
 
     if (status == "ON")
     {
-      messagetext = "This doesn't really do anything anymore! Please use 'check trials', 'check players', or 'check queue' to do a thing!";
+      messagetext = "The bot has been enabled and will now look for newly approved forms!";
     }
     else if (status == "OFF")
     {
@@ -488,10 +488,6 @@ function discordSendStatusChangeMessage(message,status,callback)
     else if (status == "QUEUE")
     {
       messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
-    }
-    else if (status == "NEWQUEUE")
-    {
-      messagetext = "Looks like someone is doing crimes.";
     }
     else if (status == "TOURNEYSYNC")
     {
