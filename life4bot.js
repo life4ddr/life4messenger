@@ -4,6 +4,10 @@
 //built using NodeJS
 
 //TODO: Add to README.md
+//TODO: Cleanup functions
+
+//debug variables
+var isDebug = false;
 
 const fs = require('fs');
 //var twit = require('twit');
@@ -24,6 +28,7 @@ bot.on('ready', () => {
 
 
   //Function to look for new members
+  /*
   bot.on('guildMemberAdd', member => {
     const channel = member.guild.channels.find(ch => ch.name === 'general-chat');
     const postchannel = bot.channels.find('name', 'general-chat');
@@ -38,7 +43,7 @@ bot.on('ready', () => {
     // Send the message, mentioning the member
     postchannel.send(message);
   });
-
+*/
 
 
 //BOT LISTEN FOR MESSAGES
@@ -325,21 +330,31 @@ function updatedSubmissionToReported(callback){
 
 function getAppStatusSequence(req,res)
 {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
+  if (isDebug == false)
+  {
+    connection = mysql.createConnection({
+      host     : process.env.MYSQLHOST,
+      user     : process.env.MYSQLUSER,
+      password : process.env.MYSQLPW,
+      database : process.env.MYSQLPLAYERDB
+    });
+    connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+  }
 
   console.log("CheckingStatus!");
   var currentStatus = wait.for(getAppStatusFromDB);
   wait.for(sendTheBoy,res,currentStatus);
 };
 
+
 function getAppStatusSequenceDiscord(message)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -347,21 +362,37 @@ function getAppStatusSequenceDiscord(message)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+
+  }
 
   console.log("Checking Status!");
+
   var currentStatus = wait.for(getAppStatusFromDB);
   wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
 };
 
+
 function getAllSubmissionsInForms(message)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
     password : process.env.MYSQLPW,
     database : process.env.MYSQLPLAYERDB
+    
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+  }
 
   console.log("Checking submissions");
   var currentStatus = wait.for(getSubmissionCount);
@@ -394,22 +425,6 @@ function discordSendTestAtMessage(message,callback)
 }, 750);
 
 }
-
-function getAppTestSequenceDiscord(message)
-{
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-
-  console.log("HARSE!");
-  wait.for(discordSendTestAtMessage,message);
-};
-
-
 
 
 
@@ -507,6 +522,8 @@ function discordSendStatusChangeMessage(message,status,callback)
 
 function changeAppStatusSequence(status,req,res)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -514,6 +531,11 @@ function changeAppStatusSequence(status,req,res)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+  }
 
   console.log("Updating Status!!");
   var currentStatus = wait.for(changeAppStatus,status);
@@ -522,6 +544,8 @@ function changeAppStatusSequence(status,req,res)
 
 function changeAppStatusSequenceDiscord(message,status)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -529,6 +553,11 @@ function changeAppStatusSequenceDiscord(message,status)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+    
+  }
 
   console.log("Updating status!");
   var currentStatus = wait.for(changeAppStatus,status);
@@ -566,6 +595,8 @@ function getAllPlayersfromDB(callback){
 
 function getAllPlayersSequence(req,res)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -573,6 +604,11 @@ function getAllPlayersSequence(req,res)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+  }
 
   console.log("Time for test!");
   var allplayers = wait.for(getAllPlayersfromDB);
@@ -797,6 +833,8 @@ function getTopTrialsFromDB(trialname, trialtopnum, callback){
 
 function getTopTrialSequence(trialname,limit,req,res)
 {
+  if (isDebug == false)
+  {
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -804,6 +842,11 @@ function getTopTrialSequence(trialname,limit,req,res)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
+  }
+  else if (isDebug == true)
+  {
+
+  }
 
   var toptrials = wait.for(getTopTrialsFromDB,trialname,limit);
   wait.for(sendTheBoy,res,toptrials);
