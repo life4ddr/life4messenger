@@ -1,5 +1,5 @@
 //LIFE4 MESSENGER - PART OF DDR BOT
-//Created by Steve Sefchick - 2020-2021
+//Created by Steve Sefchick - 2020-2022
 //Used for discord interaction
 //built using NodeJS
 
