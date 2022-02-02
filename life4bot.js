@@ -7,7 +7,7 @@
 //TODO: Cleanup functions
 
 //debug variables
-var isDebug = false;
+var isDebug = true;
 
 const fs = require('fs');
 //var twit = require('twit');
@@ -18,6 +18,71 @@ var config = require('./config.js');
 var Discord = require('discord.js');
 var bot = new Discord.Client();
 bot.login(process.env.DISCORD_BOT_TOKEN);
+
+require('dotenv').config();
+
+const express = require('express');
+const app = express();
+const port = process.env.PORT;
+//waitfor
+var wait = require('wait.for');
+
+var mysql = require('mysql');
+var connection;
+
+//experimental zone
+//
+//
+
+var mysqlv2 = require('mysql2');
+const { Client } = require('ssh2');
+const sshClient = new Client();
+const connection2 = {
+  host     : process.env.MYSQLHOST,
+  user     : process.env.MYSQLUSER,
+  password : process.env.MYSQLPW,
+  database : process.env.MYSQLPLAYERDB
+};
+const tunnelConfig = {
+  host: process.env.DB_SSH_HOST,
+  port: process.env.DB_SSH_PORT,
+  username: process.env.DB_SSH_USER,
+  privateKey:
+  require('fs').readFileSync('C:\\Users\\Steve\\Desktop\\keys\\privkey.ppk')
+}
+
+const SSHConnection = new Promise((resolve, reject) => {
+  sshClient.on('ready', () => {
+      sshClient.forwardOut(
+      forwardConfig.srcHost,
+      forwardConfig.srcPort,
+      forwardConfig.dstHost,
+      forwardConfig.dstPort,
+      (err, stream) => {
+           if (err) reject(err);
+         
+          // create a new DB server object including stream
+          const updatedDbServer = {
+               ...connection2,
+               stream
+          };
+          // connect to mysql
+          const connectionzone =  mysql.createConnection(updatedDbServer);
+          // check for successful connection
+         //  resolve or reject the Promise accordingly          
+         connectionzone.connect((error) => {
+          if (error) {
+              reject(error);
+          }
+          resolve(connectionzone);
+          });
+     });
+  }).connect(tunnelConfig);
+});
+
+//
+//
+//end experimental zone
 
 
 //BOT LOG IN
@@ -74,7 +139,7 @@ bot.on('ready', () => {
     }
 
     //DISCORD @ TEST
-    if(msg.includes(bot.user.toString()) && msg.includes('do crimes')) {
+    if(msg.includes(bot.user.toString()) && msg.includes('mysql test')) {
       if (message.channel.id === '596168285477666832')
       {
         wait.launchFiber(changeAppStatusSequenceDiscord,message,"NEWQUEUE");
@@ -186,16 +251,7 @@ bot.on('ready', () => {
 
 
 
-require('dotenv').config();
 
-const express = require('express');
-const app = express();
-const port = process.env.PORT;
-//waitfor
-var wait = require('wait.for');
-
-var mysql = require('mysql');
-var connection;
 
 
 
@@ -556,7 +612,7 @@ function changeAppStatusSequenceDiscord(message,status)
   }
   else if (isDebug == true)
   {
-    
+    connection2.connect();
   }
 
   console.log("Updating status!");
