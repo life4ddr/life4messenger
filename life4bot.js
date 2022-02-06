@@ -5,21 +5,26 @@
 
 //TODO: Add to README.md
 //TODO: Cleanup functions
+require('dotenv').config();
+var mysqlv2 = require('mysql2');
+const { Client } = require('ssh2');
+const sshClient = new Client();
+var connection2 = {
+	host     : process.env.MYSQLHOST,
+	user     : process.env.MYSQLUSER,
+	password : process.env.MYSQLPW,
+	database : process.env.MYSQLPLAYERDB
+  };
 
 //debug variables
-var isDebug = true;
+var isDebug = false;
 
 const fs = require('fs');
-//var twit = require('twit');
-var config = require('./config.js');
-//var Twitter = new twit(config);
-
 
 var Discord = require('discord.js');
 var bot = new Discord.Client();
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
-require('dotenv').config();
 
 const express = require('express');
 const app = express();
@@ -34,51 +39,58 @@ var connection;
 //
 //
 
+/*
 var mysqlv2 = require('mysql2');
 const { Client } = require('ssh2');
 const sshClient = new Client();
-const connection2 = {
-  host     : process.env.MYSQLHOST,
-  user     : process.env.MYSQLUSER,
-  password : process.env.MYSQLPW,
-  database : process.env.MYSQLPLAYERDB
-};
-const tunnelConfig = {
-  host: process.env.DB_SSH_HOST,
-  port: process.env.DB_SSH_PORT,
-  username: process.env.DB_SSH_USER,
-  privateKey:
-  require('fs').readFileSync('C:\\Users\\Steve\\Desktop\\keys\\privkey.ppk')
-}
+*/
+//var database = require('./db.js');
 
-const SSHConnection = new Promise((resolve, reject) => {
-  sshClient.on('ready', () => {
-      sshClient.forwardOut(
-      forwardConfig.srcHost,
-      forwardConfig.srcPort,
-      forwardConfig.dstHost,
-      forwardConfig.dstPort,
-      (err, stream) => {
-           if (err) reject(err);
-         
-          // create a new DB server object including stream
-          const updatedDbServer = {
-               ...connection2,
-               stream
-          };
-          // connect to mysql
-          const connectionzone =  mysql.createConnection(updatedDbServer);
-          // check for successful connection
-         //  resolve or reject the Promise accordingly          
-         connectionzone.connect((error) => {
-          if (error) {
-              reject(error);
-          }
-          resolve(connectionzone);
-          });
-     });
-  }).connect(tunnelConfig);
+
+
+/*
+var db = new Promise(function(resolve, reject){
+	sshClient.on('ready', function() {
+	  sshClient.forwardOut(
+	    // source address, this can usually be any valid address
+      '127.0.0.1',
+	    // source port, this can be any valid port number
+      3306,
+	    // destination address (localhost here refers to the SSH server)
+      process.env.SSH_HOST,
+	    // destination port
+      process.env.SSH_PORT,
+	    function (err, stream) {
+	      if (err) throw err; // SSH error: can also send error in promise ex. reject(err)
+	      // use `sql` connection as usual
+	      	connection2 = mysqlv2.createConnection({
+	          host     : process.env.MYSQLHOST,
+	          user     : process.env.MYSQLUSER,
+	          password : process.env.MYSQLPW, 
+	          database : process.env.MYSQLPLAYERDB,
+            stream :stream
+	        });
+
+	        // send connection back in variable depending on success or not
+		connection2.connect(function(err){
+			if (err) {
+				resolve(connection2);
+			} else {
+				reject(err);
+			}
+		});
+	  });
+	}).connect({
+	  host: process.env.SSH_HOST,
+	  port: process.env.SSH_PORT,
+	  username: process.env.SSH_USER,
+	  privateKey: require('fs').readFileSync('C:\\Users\\Steve\\Desktop\\keys\\privkey_openssh')
+	});
 });
+*/
+
+
+
 
 //
 //
@@ -287,8 +299,15 @@ function sendTheBoy(res,deets,callback)
 //GET APP STATUS
 app.get("/api/app/status", function(req, res) {
    
-  wait.launchFiber(getAppStatusSequence,req,res);
+  if (isDebug==true)
+  {
+    wait.launchFiber(getAppStatusSequenceDebug,req,res);
 
+  }
+  else
+  {
+  wait.launchFiber(getAppStatusSequence,req,res);
+  }
 });
 
 function discordSendStatusMessage(message,status,callback)
@@ -341,10 +360,10 @@ function getAppStatusFromDB(callback){
   setTimeout( function(){
 
     var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
+    
     connection.query(appStatus, function (error, results) {
       if (error) throw error;
       callback(null,results)
-
     });
     
 }, 25);
@@ -386,8 +405,7 @@ function updatedSubmissionToReported(callback){
 
 function getAppStatusSequence(req,res)
 {
-  if (isDebug == false)
-  {
+
     connection = mysql.createConnection({
       host     : process.env.MYSQLHOST,
       user     : process.env.MYSQLUSER,
@@ -395,22 +413,36 @@ function getAppStatusSequence(req,res)
       database : process.env.MYSQLPLAYERDB
     });
     connection.connect();
-  }
-  else if (isDebug == true)
-  {
 
-  }
+    var currentStatus = wait.for(getAppStatusFromDB);
 
-  console.log("CheckingStatus!");
-  var currentStatus = wait.for(getAppStatusFromDB);
+  console.log("Checking Status!");
+
   wait.for(sendTheBoy,res,currentStatus);
 };
 
 
+
+function getAppStatusSequenceDebug(req,res)
+{
+
+    console.log("step 1, i am here");
+    //new
+    var new_connection = wait.for(getSSHConnection);
+    var new_connection2 = wait.for(getSSHConnection2,new_connection);
+    console.log(new_connection);
+    console.log(new_connection2);
+  
+  console.log("Checking Status!");
+
+  wait.for(sendTheBoy,res,currentStatus);
+
+};
+
 function getAppStatusSequenceDiscord(message)
 {
-  if (isDebug == false)
-  {
+  //if (isDebug == false)
+  //{
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -418,12 +450,20 @@ function getAppStatusSequenceDiscord(message)
     database : process.env.MYSQLPLAYERDB
   });
   connection.connect();
-  }
+
+  //}
+  /*
   else if (isDebug == true)
   {
-
+    console.log("step 1, i am here");
+    //new
+    var new_connection = wait.for(getSSHConnection);
+    var new_connection2 = wait.for(getSSHConnection2,new_connection);
+    console.log(new_connection);
+    console.log(new_connection2);
 
   }
+  */
 
   console.log("Checking Status!");
 
@@ -434,8 +474,8 @@ function getAppStatusSequenceDiscord(message)
 
 function getAllSubmissionsInForms(message)
 {
-  if (isDebug == false)
-  {
+  //if (isDebug == false)
+  //{
   connection = mysql.createConnection({
     host     : process.env.MYSQLHOST,
     user     : process.env.MYSQLUSER,
@@ -444,11 +484,11 @@ function getAllSubmissionsInForms(message)
     
   });
   connection.connect();
-  }
-  else if (isDebug == true)
-  {
+  //}
+  //else if (isDebug == true)
+  //{
 
-  }
+  //}
 
   console.log("Checking submissions");
   var currentStatus = wait.for(getSubmissionCount);
