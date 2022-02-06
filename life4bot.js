@@ -4,7 +4,9 @@
 //built using NodeJS
 
 //TODO: Add to README.md
-//TODO: Cleanup functions
+
+//TODO: Create functon for connection
+
 require('dotenv').config();
 
 /*
@@ -138,7 +140,7 @@ bot.on('ready', () => {
 
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
-        message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
+        message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n turn off = disable the bot');
     }
     
 
@@ -213,35 +215,6 @@ bot.on('ready', () => {
       }
     }
 
-    //TOURNEY SYNC 
-    if(msg.includes(bot.user.toString()) && msg.includes('rr sync')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYSYNC");
-
-      }
-    }
-
-    //TOURNEY QUALIFIER SYNC
-    if(msg.includes(bot.user.toString()) && msg.includes('rr qual')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYQUALSYNC");
-
-      }
-    }
-
-      //TOURNEY ANNOUNCE 
-      if(msg.includes(bot.user.toString()) && msg.includes('rr announce')) {
-
-        if (message.channel.id === '596168285477666832')
-        {
-          wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYANNOUNCE");
-  
-        }
-      }
 
     //TURN OFF
     if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
@@ -253,10 +226,6 @@ bot.on('ready', () => {
       }
     }
 
-    //PLAYER LOOKUP
-    if(msg.includes(bot.user.toString()) && msg.includes('whois')) {
-      message.reply('TBD player lookup');
-  }
 });
 
 
@@ -309,26 +278,6 @@ function discordSendStatusMessage(message,status,callback)
     else if (status == "OFF")
     {
       messagetext = "Status is currently " + status +"! The bot is not running!";
-    }
-    else if (status == "QUEUE")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "PLAYERS")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "TRIALS")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "TOURNEYSYNC")
-    {
-      messagetext = "Status is currently " + status +"! The bot is syncing the spreadsheets";
-    }
-    else if (status == "TOURNEYANNOUNCE")
-    {
-      messagetext = "Status is currently " + status +"! The bot is going to announce tournament scores ";
     }
     else if (status == "ERROR")
     {
