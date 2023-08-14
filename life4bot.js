@@ -1,18 +1,12 @@
 //LIFE4 MESSENGER - PART OF DDR BOT
-//Created by Steve Sefchick - 2020-2022
-//Used for discord interaction
-//built using NodeJS
-
-//TODO: Add to README.md
-//TODO: Cleanup functions
+//Refer to the README.md for more details about functionality
+//Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
 var isDebug = false;
 
 const fs = require('fs');
-//var twit = require('twit');
 var config = require('./config.js');
-//var Twitter = new twit(config);
 
 
 var Discord = require('discord.js');
