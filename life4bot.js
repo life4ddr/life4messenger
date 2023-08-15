@@ -7,11 +7,20 @@ var isDebug = false;
 
 const fs = require('fs');
 var config = require('./config.js');
-
-
 var Discord = require('discord.js');
+var wait = require('wait.for');
+var mysql = require('mysql');
+require('dotenv').config();
+const express = require('express');
+
 var bot = new Discord.Client();
 bot.login(process.env.DISCORD_BOT_TOKEN);
+
+const port = process.env.PORT;
+var connection;
+
+const app = express();
+app.listen(port, () => console.log(`Listening on port ${port}!`));
 
 
 //BOT LOG IN
@@ -19,25 +28,6 @@ bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
 
   });
-
-
-  //Function to look for new members
-  /*
-  bot.on('guildMemberAdd', member => {
-    const channel = member.guild.channels.find(ch => ch.name === 'general-chat');
-    const postchannel = bot.channels.find('name', 'general-chat');
-    const LOG_CHANNEL_ID = `<#531607424650444820>`;
-
-    var message = `Welcome ${member} to LIFE4! Feel free to tell us a bit about yourself in `+LOG_CHANNEL_ID+`. \n Also, what's your favorite DDR song and why is it...`;
-    
-
-
-    // Do nothing if the channel wasn't found on this server
-    if (!channel) return;
-    // Send the message, mentioning the member
-    postchannel.send(message);
-  });
-*/
 
 
 //BOT LISTEN FOR MESSAGES
@@ -180,20 +170,10 @@ bot.on('ready', () => {
 
 
 
-require('dotenv').config();
-
-const express = require('express');
-const app = express();
-const port = process.env.PORT;
-//waitfor
-var wait = require('wait.for');
-
-var mysql = require('mysql');
-var connection;
 
 
 
-app.listen(port, () => console.log(`Listening on port ${port}!`));
+
 
 
 //
