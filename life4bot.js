@@ -8,7 +8,7 @@ var isDebug = false;
 const fs = require('fs');
 var config = require('./config.js');
 var Discord = require('discord.js');
-var wait = require('wait.for');
+//var wait = require('wait.for');
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
@@ -51,7 +51,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(getAppStatusSequenceDiscord,message);
+        //wait.launchFiber(getAppStatusSequenceDiscord,message);
 
       }
 
@@ -61,7 +61,7 @@ bot.on('ready', () => {
     if(msg.includes(bot.user.toString()) && msg.includes('do crimes')) {
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"NEWQUEUE");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"NEWQUEUE");
 
       }
     }
@@ -70,7 +70,7 @@ bot.on('ready', () => {
     if(msg.includes(bot.user.toString()) && msg.includes('get submissions')) {
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(getAllSubmissionsInForms,message,"SUBMISSIONS");
+        //wait.launchFiber(getAllSubmissionsInForms,message,"SUBMISSIONS");
 
       }
     }
@@ -80,7 +80,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"ON");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"ON");
 
       }
       
@@ -91,7 +91,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"QUEUE");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"QUEUE");
 
       }
     }
@@ -101,7 +101,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"PLAYERS");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"PLAYERS");
 
       }
     }
@@ -112,7 +112,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TRIALS");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TRIALS");
 
       }
     }
@@ -122,7 +122,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYSYNC");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYSYNC");
 
       }
     }
@@ -132,7 +132,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYQUALSYNC");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYQUALSYNC");
 
       }
     }
@@ -142,7 +142,7 @@ bot.on('ready', () => {
 
         if (message.channel.id === '596168285477666832')
         {
-          wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYANNOUNCE");
+          //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYANNOUNCE");
   
         }
       }
@@ -152,7 +152,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
 
       }
     }
@@ -205,7 +205,7 @@ function sendTheBoy(res,deets,callback)
 //GET APP STATUS
 app.get("/api/app/status", function(req, res) {
    
-  wait.launchFiber(getAppStatusSequence,req,res);
+  //wait.launchFiber(getAppStatusSequence,req,res);
 
 });
 
@@ -321,7 +321,7 @@ function getAppStatusSequence(req,res)
 
   console.log("CheckingStatus!");
   var currentStatus = wait.for(getAppStatusFromDB);
-  wait.for(sendTheBoy,res,currentStatus);
+  //wait.for(sendTheBoy,res,currentStatus);
 };
 
 
@@ -346,7 +346,7 @@ function getAppStatusSequenceDiscord(message)
   console.log("Checking Status!");
 
   var currentStatus = wait.for(getAppStatusFromDB);
-  wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
+  //wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
 };
 
 
@@ -372,7 +372,7 @@ function getAllSubmissionsInForms(message)
   var currentStatus = wait.for(getSubmissionCount);
   console.log(currentStatus[0].subcount);
   var updatestate = wait.for(updatedSubmissionToReported);
-  wait.for(discordSendSubmissionMessage,message,currentStatus[0].subcount);
+  //wait.for(discordSendSubmissionMessage,message,currentStatus[0].subcount);
 
 };
 
@@ -420,7 +420,7 @@ app.get("/api/app/status/change", function(req, res) {
     }
     else
     {
-  wait.launchFiber(changeAppStatusSequence, value,req,res);
+  //wait.launchFiber(changeAppStatusSequence, value,req,res);
     }
 });
 
@@ -513,7 +513,7 @@ function changeAppStatusSequence(status,req,res)
 
   console.log("Updating Status!!");
   var currentStatus = wait.for(changeAppStatus,status);
-  wait.for(sendTheBoy,res,currentStatus);
+  //wait.for(sendTheBoy,res,currentStatus);
 };
 
 function changeAppStatusSequenceDiscord(message,status)
@@ -535,7 +535,7 @@ function changeAppStatusSequenceDiscord(message,status)
 
   console.log("Updating status!");
   var currentStatus = wait.for(changeAppStatus,status);
-  wait.for(discordSendStatusChangeMessage,message,status);
+  //wait.for(discordSendStatusChangeMessage,message,status);
 };
 
 
@@ -548,7 +548,7 @@ function changeAppStatusSequenceDiscord(message,status)
 //API
 app.get("/api/players/all", function(req, res) {
    
-  wait.launchFiber(getAllPlayersSequence,req,res);
+  //wait.launchFiber(getAllPlayersSequence,req,res);
 
 });
 
@@ -586,7 +586,7 @@ function getAllPlayersSequence(req,res)
 
   console.log("Time for test!");
   var allplayers = wait.for(getAllPlayersfromDB);
-  wait.for(sendTheBoy,res,allplayers);
+  //wait.for(sendTheBoy,res,allplayers);
 };
 
 
@@ -609,7 +609,7 @@ function getAllPlayersSequence(req,res)
   //name found
   else
   {
-  wait.launchFiber(getSinglePlayerSequence, name, req,res);
+  //wait.launchFiber(getSinglePlayerSequence, name, req,res);
   }
 });
 
@@ -640,7 +640,7 @@ function getSinglePlayerSequence(playername,req,res)
   connection.connect();
 
   var oneplayer = wait.for(getSinglePlayerFromDB,playername);
-  wait.for(sendTheBoy,res,oneplayer);
+  //wait.for(sendTheBoy,res,oneplayer);
 };
 
 
@@ -668,7 +668,7 @@ app.get("/api/trial", function(req, res) {
   //name found
   else
   {
-    wait.launchFiber(getTopTrialSequence, trialname,limit, req,res);
+    //wait.launchFiber(getTopTrialSequence, trialname,limit, req,res);
   }
 
 
@@ -823,7 +823,7 @@ function getTopTrialSequence(trialname,limit,req,res)
   }
 
   var toptrials = wait.for(getTopTrialsFromDB,trialname,limit);
-  wait.for(sendTheBoy,res,toptrials);
+  //wait.for(sendTheBoy,res,toptrials);
 };
 
 
