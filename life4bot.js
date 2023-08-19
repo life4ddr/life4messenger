@@ -827,13 +827,43 @@ function getTopTrialSequence(trialname,limit,req,res)
 };
 
 
-//check for needed activity
-var life4actionTime = function()
-{
 
+
+
+
+
+
+
+
+function GetConnection(){
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      connection = mysql.createConnection({
+        host     : process.env.MYSQLHOST,
+        user     : process.env.MYSQLUSER,
+        password : process.env.MYSQLPW,
+        database : process.env.MYSQLPLAYERDB
+      });
+        connection.connect();
+        resolve(connection);
+      });
+    }, 5000);
+
+};
+
+
+
+//check for needed activity
+async function life4actionTime()
+{
+    console.log('Making database connection...');
+    console.log(await GetConnection());
+    console.log('Connection made!');
     console.log('App is running!!!');
 
 }
 
 
 life4actionTime();
+//HellAss2();
