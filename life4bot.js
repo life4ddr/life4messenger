@@ -12,6 +12,7 @@ var Discord = require('discord.js');
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
+const { constants } = require('buffer');
 
 var bot = new Discord.Client();
 bot.login(process.env.DISCORD_BOT_TOKEN);
@@ -32,8 +33,8 @@ bot.on('ready', () => {
 
 //BOT LISTEN FOR MESSAGES
   bot.on('message', (message) => {
+    
     let myRole = message.guild.roles.cache.get("530615149531365393");
-
     
     var msg = message.content;
     if (msg.startsWith('<@!')) {
@@ -51,6 +52,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
+        const status = GetStatus(message);
         //wait.launchFiber(getAppStatusSequenceDiscord,message);
 
       }
@@ -209,9 +211,12 @@ app.get("/api/app/status", function(req, res) {
 
 });
 
-function discordSendStatusMessage(message,status,callback)
+
+
+function discordSendStatusMessage(message)
 {
-  setTimeout( function(){
+  return new Promise((resolve) => {
+    setTimeout(() => {
 
     var messagetext = "";
 
@@ -251,21 +256,26 @@ function discordSendStatusMessage(message,status,callback)
 
     message.reply(messagetext);
 
-}, 750);
+    });
+  }, 5000);
 
 }
-function getAppStatusFromDB(callback){
 
-  setTimeout( function(){
+//Query the database and retrieve the status
+function getAppStatusFromDB(){
 
-    var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
-    connection.query(appStatus, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
+  return new Promise((resolve) => {
+    setTimeout(() => {
 
+      var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
+      connection.query(appStatus, function (error, results) {
+        if (error) throw error;
+        console.log("status retrieved from DB!");
+        return results;
+  
+      });
     });
-    
-}, 25);
+  }, 5000);
 
 }
 
@@ -345,7 +355,7 @@ function getAppStatusSequenceDiscord(message)
 
   console.log("Checking Status!");
 
-  var currentStatus = wait.for(getAppStatusFromDB);
+  //var currentStatus = wait.for(getAppStatusFromDB);
   //wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
 };
 
@@ -833,7 +843,16 @@ function getTopTrialSequence(trialname,limit,req,res)
 
 
 
+async function GetStatus(message)
+{
+  //make connection
+  //connection = await GetConnection();
+  //run query
+  const results = await getAppStatusFromDB();
+  //announce message
+  const announce = await discordSendStatusMessage(message);
 
+};
 
 function GetConnection(){
   return new Promise((resolve) => {
@@ -857,13 +876,14 @@ function GetConnection(){
 //check for needed activity
 async function life4actionTime()
 {
-    console.log('Making database connection...');
-    console.log(await GetConnection());
-    console.log('Connection made!');
+    //console.log('Making database connection...');
+    //console.log(await GetConnection());
+    //console.log('Connection made!');
     console.log('App is running!!!');
 
 }
 
+GetStatus();
 
 life4actionTime();
 //HellAss2();
