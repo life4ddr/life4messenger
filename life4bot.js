@@ -846,7 +846,7 @@ function getTopTrialSequence(trialname,limit,req,res)
 async function GetStatus(message)
 {
   //make connection
-  //connection = await GetConnection();
+  connection = await GetConnection();
   //run query
   const results = await getAppStatusFromDB();
   //announce message
@@ -858,17 +858,32 @@ function GetConnection(){
   return new Promise((resolve) => {
     setTimeout(() => {
 
-      connection = mysql.createConnection({
-        host     : process.env.MYSQLHOST,
-        user     : process.env.MYSQLUSER,
-        password : process.env.MYSQLPW,
-        database : process.env.MYSQLPLAYERDB
-      });
+      if (isDebug)
+      {
+        connection = mysql.createConnection({
+          host     : process.env.MYSQLHOST_TEST,
+          user     : process.env.MYSQLUSER_TEST,
+          password : process.env.MYSQLPW_TEST,
+          database : process.env.MYSQLPLAYERDB_TEST
+        });
         connection.connect();
         resolve(connection);
-      });
+      }
+      else
+      {
+        connection = mysql.createConnection({
+          host     : process.env.MYSQLHOST,
+          user     : process.env.MYSQLUSER,
+          password : process.env.MYSQLPW,
+          database : process.env.MYSQLPLAYERDB
+        });
+        connection.connect();
+        resolve(connection);
+      }
+
     }, 5000);
 
+});
 };
 
 
@@ -877,7 +892,7 @@ function GetConnection(){
 async function life4actionTime()
 {
     //console.log('Making database connection...');
-    //console.log(await GetConnection());
+    console.log(await GetConnection());
     //console.log('Connection made!');
     console.log('App is running!!!');
 
@@ -885,5 +900,5 @@ async function life4actionTime()
 
 GetStatus();
 
-life4actionTime();
+//life4actionTime();
 //HellAss2();
