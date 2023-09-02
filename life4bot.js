@@ -3,7 +3,7 @@
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
-var isDebug = false;
+var isDebug = true;
 
 const fs = require('fs');
 var config = require('./config.js');
@@ -13,6 +13,7 @@ var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
 const { constants } = require('buffer');
+const { resolve } = require('path');
 
 var bot = new Discord.Client();
 bot.login(process.env.DISCORD_BOT_TOKEN);
@@ -53,27 +54,16 @@ bot.on('ready', () => {
       if (message.channel.id === '596168285477666832')
       {
         const status = GetStatus(message);
-        //wait.launchFiber(getAppStatusSequenceDiscord,message);
 
       }
 
-    }
-
-    //DISCORD @ TEST
-    if(msg.includes(bot.user.toString()) && msg.includes('do crimes')) {
-      if (message.channel.id === '596168285477666832')
-      {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"NEWQUEUE");
-
-      }
     }
 
     //GET NUMBER OF NEW SUBMISSIONS IN QUEUE
     if(msg.includes(bot.user.toString()) && msg.includes('get submissions')) {
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(getAllSubmissionsInForms,message,"SUBMISSIONS");
-
+        const submissions = GetSubmissions(message);
       }
     }
 
@@ -213,48 +203,57 @@ app.get("/api/app/status", function(req, res) {
 
 
 
-function discordSendStatusMessage(message)
+function discordSendStatusMessage(message,app_status)
 {
   return new Promise((resolve) => {
     setTimeout(() => {
 
-    var messagetext = "";
+      if (isDebug==true)
+      {
+        console.log("Discord Send Message for " + app_status + "!");
+        resolve("message sent !");
+      }
+      else
+      {
+          var messagetext = "";
 
-    if (status == "ON")
-    {
-      messagetext = "Status is currently " + status +"! The bot is running and looking for approved forms!";
-    }
-    else if (status == "OFF")
-    {
-      messagetext = "Status is currently " + status +"! The bot is not running!";
-    }
-    else if (status == "QUEUE")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "PLAYERS")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "TRIALS")
-    {
-      messagetext = "Status is currently " + status +"! This status is no longer used!";
-    }
-    else if (status == "TOURNEYSYNC")
-    {
-      messagetext = "Status is currently " + status +"! The bot is syncing the spreadsheets";
-    }
-    else if (status == "TOURNEYANNOUNCE")
-    {
-      messagetext = "Status is currently " + status +"! The bot is going to announce tournament scores ";
-    }
-    else if (status == "ERROR")
-    {
-      messagetext = "Status is currently " + status +"! Uh oh! Tell my Dad!";
-    }
+          if (app_status == "ON")
+          {
+            messagetext = "Status is currently " + app_status +"! The bot is running and looking for approved forms!";
+          }
+          else if (app_status == "OFF")
+          {
+            messagetext = "Status is currently " + app_status +"! The bot is not running!";
+          }
+          else if (app_status == "QUEUE")
+          {
+            messagetext = "Status is currently " + app_status +"! This status is no longer used!";
+          }
+          else if (app_status == "PLAYERS")
+          {
+            messagetext = "Status is currently " + app_status +"! This status is no longer used!";
+          }
+          else if (app_status == "TRIALS")
+          {
+            messagetext = "Status is currently " + app_status +"! This status is no longer used!";
+          }
+          else if (app_status == "TOURNEYSYNC")
+          {
+            messagetext = "Status is currently " + app_status +"! The bot is syncing the spreadsheets";
+          }
+          else if (app_status == "TOURNEYANNOUNCE")
+          {
+            messagetext = "Status is currently " + app_status +"! The bot is going to announce tournament scores ";
+          }
+          else if (app_status == "ERROR")
+          {
+            messagetext = "Status is currently " + app_status +"! Uh oh! Tell my Dad!";
+          }
 
 
-    message.reply(messagetext);
+          message.reply(messagetext);
+          resolve(messagetext);
+    }
 
     });
   }, 5000);
@@ -267,13 +266,22 @@ function getAppStatusFromDB(){
   return new Promise((resolve) => {
     setTimeout(() => {
 
-      var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
-      connection.query(appStatus, function (error, results) {
-        if (error) throw error;
-        console.log("status retrieved from DB!");
-        return results;
-  
-      });
+      if (isDebug==true)
+      {
+        console.log("Get Status from DB!");
+        resolve("Debug Status!");
+      }
+      else
+      {
+        var appStatus = "SELECT varValue from life4controls where varName='appStatus'";
+        connection.query(appStatus, function (error, results) {
+          if (error) throw error;
+          console.log("status retrieved from DB!");
+          resolve(results);
+          return results;
+    
+        });
+      }
     });
   }, 5000);
 
@@ -281,33 +289,60 @@ function getAppStatusFromDB(){
 
 function getSubmissionCount(callback){
 
+  return new Promise((resolve) => {
   setTimeout( function(){
 
-    var appStatus = "select COUNT(*) as 'subcount' from wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
-    connection.query(appStatus, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
+      if (isDebug==true)
+      {
+        console.log("Get Submission Count!");
+        resolve("Debug Count");
+      }
+      else
+      {
+          var appStatus = "select COUNT(*) as 'subcount' from wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
+          connection.query(appStatus, function (error, results) {
+            if (error) throw error;
+            resolve(result);
+            callback(null,results);
 
-    });
-    
-}, 25);
+          });
+      }
+      
+  }, 5000);
+
+  });
 
 }
 
 function updatedSubmissionToReported(callback){
 
-  setTimeout( function(){
+  return new Promise((resolve) => {
 
-    console.log("updating");
-    var appStatus = "update wp_kikf_postmeta set meta_value='submission_reported' where meta_key='state' and meta_value='submitted'";
-    connection.query(appStatus, function (error, results) {
-      if (error) throw error;
-      console.log("gonna update");
-      callback(null,results)
+        setTimeout( function(){
 
-    });
-    
-}, 25);
+          if (isDebug==true)
+          {
+        
+            console.log("Submission Count Updated");
+            resolve("Submission count updated");
+          }
+          else
+          {
+            console.log("updating");
+            var appStatus = "update wp_kikf_postmeta set meta_value='submission_reported' where meta_key='state' and meta_value='submitted'";
+            connection.query(appStatus, function (error, results) {
+              if (error) throw error;
+              console.log("gonna update");
+              resolve(results);
+              callback(null,results)
+        
+            });
+          }
+
+          
+      }, 2500);
+
+  });
 
 }
 
@@ -334,57 +369,6 @@ function getAppStatusSequence(req,res)
   //wait.for(sendTheBoy,res,currentStatus);
 };
 
-
-function getAppStatusSequenceDiscord(message)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
-
-
-  }
-
-  console.log("Checking Status!");
-
-  //var currentStatus = wait.for(getAppStatusFromDB);
-  //wait.for(discordSendStatusMessage,message,currentStatus[0].varValue);
-};
-
-
-function getAllSubmissionsInForms(message)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-    
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
-
-  }
-
-  console.log("Checking submissions");
-  var currentStatus = wait.for(getSubmissionCount);
-  console.log(currentStatus[0].subcount);
-  var updatestate = wait.for(updatedSubmissionToReported);
-  //wait.for(discordSendSubmissionMessage,message,currentStatus[0].subcount);
-
-};
 
 //
 // TEST
@@ -452,13 +436,24 @@ function changeAppStatus(status,callback){
 
 function discordSendSubmissionMessage(message,countofgoods,callback)
 {
-  setTimeout( function(){
+  return new Promise((resolve) => {
 
-    var messagetext = "There are " + countofgoods + " in the form queue ready to be reviewed!";
+        setTimeout( function(){
 
-    message.reply(messagetext);
+          if (isDebug==true)
+          {
+              console.log("Discord Send Submission Count Message");
+              resolve("discord send status message");
+          }
+          else
+          {
+              var messagetext = "There are " + countofgoods + " in the form queue ready to be reviewed!";
+              message.reply(messagetext);
+              resolve(messagetext);
+          }
 
-}, 750);
+      }, 750);
+  });
 }
 
 
@@ -837,37 +832,15 @@ function getTopTrialSequence(trialname,limit,req,res)
 };
 
 
-
-
-
-
-
-
-async function GetStatus(message)
-{
-  //make connection
-  connection = await GetConnection();
-  //run query
-  const results = await getAppStatusFromDB();
-  //announce message
-  const announce = await discordSendStatusMessage(message);
-
-};
-
 function GetConnection(){
   return new Promise((resolve) => {
     setTimeout(() => {
 
       if (isDebug)
       {
-        connection = mysql.createConnection({
-          host     : process.env.MYSQLHOST_TEST,
-          user     : process.env.MYSQLUSER_TEST,
-          password : process.env.MYSQLPW_TEST,
-          database : process.env.MYSQLPLAYERDB_TEST
-        });
-        connection.connect();
-        resolve(connection);
+        console.log("ok!");
+        resolve("debug");
+        
       }
       else
       {
@@ -888,6 +861,39 @@ function GetConnection(){
 
 
 
+
+//
+//ASYNC FUNCTION ZONE
+//
+
+
+
+//GET STATUS
+async function GetStatus(message)
+{
+  //make connection
+  connection = await GetConnection();
+  //run query
+  const app_status = await getAppStatusFromDB();
+  //announce message
+  const announce = await discordSendStatusMessage(message,app_status);
+};
+
+//GET SUBMISSIONS
+async function GetSubmissions(message)
+{
+  //make connection
+  connection = await GetConnection();
+  //get submission count
+  const submission_count = await getSubmissionCount();
+  //update state
+  const submission_get_update = await updatedSubmissionToReported();
+  //report out to discord
+  const discord_send_submission_message = await discordSendSubmissionMessage(message,submission_count[0].subcount);
+}
+
+
+
 //check for needed activity
 async function life4actionTime()
 {
@@ -895,10 +901,9 @@ async function life4actionTime()
     console.log(await GetConnection());
     //console.log('Connection made!');
     console.log('App is running!!!');
-
 }
 
-GetStatus();
+GetSubmissions();
 
 //life4actionTime();
 //HellAss2();
