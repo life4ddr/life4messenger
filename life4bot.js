@@ -26,6 +26,7 @@ app.listen(port, () => console.log(`Listening on port ${port}!`));
 
 
 //BOT LOG IN
+//This runs automatically in order to log in on discord and listen to activity
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
 
@@ -33,6 +34,7 @@ bot.on('ready', () => {
 
 
 //BOT LISTEN FOR MESSAGES
+//Listener that reacts to commands when the bot is mentioned
   bot.on('message', (message) => {
     
     let myRole = message.guild.roles.cache.get("530615149531365393");
@@ -47,14 +49,12 @@ bot.on('ready', () => {
         message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
     
-
     //GET STATUS
     if(msg.includes(bot.user.toString()) && msg.includes('status')) {
 
       if (message.channel.id === '596168285477666832')
       {
         const status = GetStatus(message);
-
       }
 
     }
@@ -76,6 +76,16 @@ bot.on('ready', () => {
 
       }
       
+    }
+
+    //TURN OFF
+    if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
+
+      }
     }
 
     //CHECK QUEUE
@@ -139,20 +149,6 @@ bot.on('ready', () => {
         }
       }
 
-    //TURN OFF
-    if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
-
-      }
-    }
-
-    //PLAYER LOOKUP
-    if(msg.includes(bot.user.toString()) && msg.includes('whois')) {
-      message.reply('TBD player lookup');
-  }
 });
 
 
@@ -192,16 +188,6 @@ function sendTheBoy(res,deets,callback)
 //
 //GET STATUS
 //
-
-
-//GET APP STATUS
-app.get("/api/app/status", function(req, res) {
-   
-  //wait.launchFiber(getAppStatusSequence,req,res);
-
-});
-
-
 
 function discordSendStatusMessage(message,app_status)
 {
@@ -345,56 +331,6 @@ function updatedSubmissionToReported(callback){
   });
 
 }
-
-
-function getAppStatusSequence(req,res)
-{
-  if (isDebug == false)
-  {
-    connection = mysql.createConnection({
-      host     : process.env.MYSQLHOST,
-      user     : process.env.MYSQLUSER,
-      password : process.env.MYSQLPW,
-      database : process.env.MYSQLPLAYERDB
-    });
-    connection.connect();
-  }
-  else if (isDebug == true)
-  {
-
-  }
-
-  console.log("CheckingStatus!");
-  var currentStatus = wait.for(getAppStatusFromDB);
-  //wait.for(sendTheBoy,res,currentStatus);
-};
-
-
-//
-// TEST
-//
-
-
-function discordSendTestAtMessage(message,callback)
-{
-  setTimeout( function(){
-
-    var messagetext = "";
-
-    var userid = bot.users.cache.find(u => u.tag === 'stevesefchick#7960').id;
-
-    var id = "<@" + userid + ">";
-
-    console.log("userid = " + id);
-      messagetext = "Hello " + id + " this is a test";
-
-    message.reply(messagetext);
-
-}, 750);
-
-}
-
-
 
 //
 // CHANGE STATUS
