@@ -72,6 +72,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
+        const status_update = ChangeStatus(message,"ON");
         //wait.launchFiber(changeAppStatusSequenceDiscord,message,"ON");
 
       }
@@ -802,7 +803,17 @@ function GetConnection(){
 //ASYNC FUNCTION ZONE
 //
 
+//CHANGE STATUS
+async function ChangeStatus(message,status_type)
+{
+  //make connection
+  connection = await GetConnection();
+  //run query
 
+  //report out to discord
+
+
+}
 
 //GET STATUS
 async function GetStatus(message)
