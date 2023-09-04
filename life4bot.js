@@ -3,7 +3,7 @@
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
-var isDebug = true;
+var isDebug = false;
 
 const fs = require('fs');
 var config = require('./config.js');
@@ -86,79 +86,11 @@ bot.on('ready', () => {
       }
     }
 
-    //CHECK QUEUE
-    if(msg.includes(bot.user.toString()) && msg.includes('check queue')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        const status_update = ChangeStatus(message,"QUEUE");
-
-      }
-    }
-
-    //CHECK PLAYERS
-    if(msg.includes(bot.user.toString()) && msg.includes('check players')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        const status_update = ChangeStatus(message,"PLAYERS");
-      }
-    }
-
-
-    //CHECK TRIALS
-    if(msg.includes(bot.user.toString()) && msg.includes('check trials')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        const status_update = ChangeStatus(message,"TRIALS");
-      }
-    }
-
-    //TOURNEY SYNC 
-    if(msg.includes(bot.user.toString()) && msg.includes('rr sync')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        const status_update = ChangeStatus(message,"TOURNEYSYNC");
-      }
-    }
-
-    //TOURNEY QUALIFIER SYNC
-    if(msg.includes(bot.user.toString()) && msg.includes('rr qual')) {
-
-      if (message.channel.id === '596168285477666832')
-      {
-        const status_update = ChangeStatus(message,"TOURNEYQUALSYNC");
-      }
-    }
-
-      //TOURNEY ANNOUNCE 
-      if(msg.includes(bot.user.toString()) && msg.includes('rr announce')) {
-
-        if (message.channel.id === '596168285477666832')
-        {
-          const status_update = ChangeStatus(message,"TOURNEYANNOUNCE");
-
-        }
-      }
-
 });
 
 
 
-
-
-
-
-
-
-
-
-//
-//GET STATUS
-//
-
+//send a discord message based on the status of the bot
 function discordSendStatusMessage(message,app_status)
 {
   return new Promise((resolve) => {
@@ -246,29 +178,30 @@ function getAppStatusFromDB(){
 function getSubmissionCount(callback){
 
   return new Promise((resolve) => {
-  setTimeout( function(){
+    setTimeout( function(){
 
-      if (isDebug==true)
-      {
-        console.log("Get Submission Count!");
-        resolve("Debug Count");
-      }
-      else
-      {
-          var appStatus = "select COUNT(*) as 'subcount' from wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
-          connection.query(appStatus, function (error, results) {
-            if (error) throw error;
-            resolve(result);
-            callback(null,results);
+        if (isDebug==true)
+        {
+          console.log("Get Submission Count!");
+          resolve("Debug Count");
+        }
+        else
+        {
+            var appStatus = "select COUNT(*) as 'subcount' from wp_kikf_postmeta where meta_key='state' and meta_value='submitted'";
+            connection.query(appStatus, function (error, results) {
+              if (error) throw error;
+              resolve(result);
+              callback(null,results);
 
-          });
-      }
-      
-  }, 5000);
+            });
+        }
+        
+    }, 5000);
 
   });
 
 }
+
 
 function updatedSubmissionToReported(callback){
 
@@ -302,29 +235,7 @@ function updatedSubmissionToReported(callback){
 
 }
 
-//
-// CHANGE STATUS
-//
-
-
-//API
-app.get("/api/app/status/change", function(req, res) {
-   
-  var value = req.query.status;
-
-  if (value == undefined ||
-    (value != "ON" &&
-    value !="OFF"))
-    {
-      res.status(400).json("Invalid status");
-    }
-    else
-    {
-  //wait.launchFiber(changeAppStatusSequence, value,req,res);
-    }
-});
-
-
+//make a change to the status of the bot
 function changeAppStatus(status,callback){
 
   return new Promise((resolve) => {
@@ -353,6 +264,7 @@ function changeAppStatus(status,callback){
 
 }
 
+//send a discord message once the submission counts have been sent
 function discordSendSubmissionMessage(message,countofgoods,callback)
 {
   return new Promise((resolve) => {
@@ -376,6 +288,7 @@ function discordSendSubmissionMessage(message,countofgoods,callback)
 }
 
 
+//send a discord update message once the status has been changed
 function discordSendStatusChangeMessage(message,status,callback)
 {
 
@@ -400,26 +313,6 @@ function discordSendStatusChangeMessage(message,status,callback)
           {
             messagetext = "The bot has been deactivated! ";
           }
-          else if (status == "TRIALS")
-          {
-            messagetext = "The bot will now check for new trials!";
-          }
-          else if (status == "PLAYERS")
-          {
-            messagetext = "The bot will now check for new players!";
-          }
-          else if (status == "QUEUE")
-          {
-            messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
-          }
-          else if (status == "TOURNEYSYNC")
-          {
-            messagetext = "spreadsheet sync test";
-          }
-          else if (status == "TOURNEYANNOUNCE")
-          {
-            messagetext = "rr announcement test";
-          }
 
           message.reply(messagetext);
           resolve(messagetext);
@@ -431,298 +324,7 @@ function discordSendStatusChangeMessage(message,status,callback)
 
 }
 
-
-
-
-
-
-
-//
-// GET ALL PLAYERS
-//
-
-//API
-app.get("/api/players/all", function(req, res) {
-   
-  //wait.launchFiber(getAllPlayersSequence,req,res);
-
-});
-
-function getAllPlayersfromDB(callback){
-
-  setTimeout( function(){
-
-    var playerAllQuery = "SELECT * from playerList";
-    connection.query(playerAllQuery, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
-
-    });
-    
-}, 25);
-
-}
-
-function getAllPlayersSequence(req,res)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
-
-  }
-
-  console.log("Time for test!");
-  var allplayers = wait.for(getAllPlayersfromDB);
-  //wait.for(sendTheBoy,res,allplayers);
-};
-
-
-//
-// GET SINGLE PLAYER
-//
-
- //API
- app.get("/api/player", function(req, res) {
-   
-  //get the player's name
-  var name = req.query.name;
-
-  
-  //if no name
-  if (name == undefined)
-  {
-    res.status(400).json("Missing a name!");
-  }
-  //name found
-  else
-  {
-  //wait.launchFiber(getSinglePlayerSequence, name, req,res);
-  }
-});
-
-function getSinglePlayerFromDB(playername, callback){
-
-  setTimeout( function(){
-
-    var playerOneQuery = "SELECT * from playerList where playerName = '"+playername+"'";
-    connection.query(playerOneQuery, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
-
-    });
-    
-}, 25);
-
-}
-
-
-function getSinglePlayerSequence(playername,req,res)
-{
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-
-  var oneplayer = wait.for(getSinglePlayerFromDB,playername);
-  //wait.for(sendTheBoy,res,oneplayer);
-};
-
-
-//
-// GET TOP TRIALS
-//
-
-//API
-app.get("/api/trial", function(req, res) {
-   
-  //get the player's name
-  var trialname = req.query.name;
-  var limit = req.query.limit;
-
-  if (limit == undefined)
-  {
-    limit = 99999;
-  }
-
-  //if no name
-  if (trialname == undefined)
-  {
-    res.status(400).json("Trial name must be included!");
-  }
-  //name found
-  else
-  {
-    //wait.launchFiber(getTopTrialSequence, trialname,limit, req,res);
-  }
-
-
-});
-
-function translateTrialName(trialName)
-{
-  if (trialName == "heartbreak")
-  {
-    trialName = "HEARTBREAK (12)";
-  }
-  else if (trialName == "celestial")
-  {
-    trialName = "CELESTIAL (13)";
-  }
-  else if (trialName == "daybreak")
-  {
-    trialName = "DAYBREAK (14)";
-  }
-  else if (trialName == "hellscape")
-  {
-    trialName = "HELLSCAPE (15)";
-  }
-  else if (trialName == "clockwork")
-  {
-    trialName = "CLOCKWORK (15)";
-  }
-  else if (trialName == "pharaoh")
-  {
-    trialName = "PHARAOH (15)";
-  }
-  else if (trialName == "paradox")
-  {
-    trialName = "PARADOX (16)";
-  }
-  else if (trialName == "inhuman")
-  {
-    trialName = "INHUMAN (16)";
-  }
-  else if (trialName == "chemical")
-  {
-    trialName = "CHEMICAL (17)";
-  }
-  else if (trialName == "origin")
-  {
-    trialName = "ORIGIN (18)";
-  }
-  else if (trialName == "origin")
-  {
-    trialName = "ORIGIN (18)";
-  }
-  else if (trialName == "mainframe")
-  {
-    trialName = "MAINFRAME (13)";
-  }
-  else if (trialName == "countdown")
-  {
-    trialName = "COUNTDOWN (14)";
-  }
-  else if (trialName == "heatwave")
-  {
-    trialName = "HEATWAVE (15)";
-  }
-  else if (trialName == "snowdrift")
-  {
-    trialName = "SNOWDRIFT (16)";
-  }
-  else if (trialName == "ascension")
-  {
-    trialName = "ASCENSION (17)";
-  }
-  else if (trialName == "wanderlust")
-  {
-    trialName = "WANDERLUST (15)";
-  }
-  else if (trialName == "primal")
-  {
-    trialName = "PRIMAL (13)";
-  }
-  else if (trialName == "species")
-  {
-    trialName = "SPECIES (13)";
-  }
-  else if (trialName == "upheaval")
-  {
-    trialName = "UPHEAVAL (14)";
-  }
-  else if (trialName == "tempest")
-  {
-    trialName = "TEMPEST (15)";
-  }
-  else if (trialName == "circadia")
-  {
-    trialName = "CIRCADIA (16)";
-  }
-  else if (trialName == "quantum")
-  {
-    trialName = "QUANTUM (18)";
-  }
-  else if (trialName == "passport")
-  {
-    trialName = "PASSPORT (13)";
-  }
-  else if (trialName == "believe")
-  {
-    trialName = "BELIEVE (12)";
-  }
-  else if (trialName == "devotion")
-  {
-    trialName = "DEVOTION (12)";
-  }
-  else if (trialName == "spectacle")
-  {
-    trialName = "SPECTACLE (16)";
-  }
-  //TODO: Add new trials
-  return trialName;
-};
-
-function getTopTrialsFromDB(trialname, trialtopnum, callback){
-
-  setTimeout( function(){
-
-    trialname = translateTrialName(trialname);
-
-    var trialTopQuery = "SELECT playerName, trialName, playerRank,playerScore,playerDiff,playerUpdateDate from playertrialrank where trialName = '"+trialname+"' order by playerScore desc limit " + trialtopnum;
-    connection.query(trialTopQuery, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
-
-    });
-    
-}, 25);
-
-}
-
-function getTopTrialSequence(trialname,limit,req,res)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
-
-  }
-
-  var toptrials = wait.for(getTopTrialsFromDB,trialname,limit);
-  //wait.for(sendTheBoy,res,toptrials);
-};
-
-
+//Make a database connection
 function GetConnection(){
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -804,7 +406,4 @@ async function life4actionTime()
     console.log('App is running!!!');
 }
 
-ChangeStatus(null,"ON");
-
-//life4actionTime();
-//HellAss2();
+life4actionTime();
