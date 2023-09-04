@@ -73,8 +73,6 @@ bot.on('ready', () => {
       if (message.channel.id === '596168285477666832')
       {
         const status_update = ChangeStatus(message,"ON");
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"ON");
-
       }
       
     }
@@ -84,8 +82,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"OFF");
-
+        const status_update = ChangeStatus(message,"OFF");
       }
     }
 
@@ -94,7 +91,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"QUEUE");
+        const status_update = ChangeStatus(message,"QUEUE");
 
       }
     }
@@ -104,8 +101,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"PLAYERS");
-
+        const status_update = ChangeStatus(message,"PLAYERS");
       }
     }
 
@@ -115,8 +111,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TRIALS");
-
+        const status_update = ChangeStatus(message,"TRIALS");
       }
     }
 
@@ -125,8 +120,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYSYNC");
-
+        const status_update = ChangeStatus(message,"TOURNEYSYNC");
       }
     }
 
@@ -135,8 +129,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYQUALSYNC");
-
+        const status_update = ChangeStatus(message,"TOURNEYQUALSYNC");
       }
     }
 
@@ -145,8 +138,8 @@ bot.on('ready', () => {
 
         if (message.channel.id === '596168285477666832')
         {
-          //wait.launchFiber(changeAppStatusSequenceDiscord,message,"TOURNEYANNOUNCE");
-  
+          const status_update = ChangeStatus(message,"TOURNEYANNOUNCE");
+
         }
       }
 
@@ -159,30 +152,6 @@ bot.on('ready', () => {
 
 
 
-
-
-
-
-
-
-//
-//GENERAL API FUNCTIONS
-//
-function sendTheBoy(res,deets,callback)
-{
-  setTimeout( function(){
-
-    res.send(JSON.stringify(deets));
-
-}, 750);
-
-}
-  //TEST
-  app.get("/api/test", function(req, res) {
-    res.status(200).json("the dang test worked!");
-  });
-
-  
 
 
 
@@ -358,16 +327,29 @@ app.get("/api/app/status/change", function(req, res) {
 
 function changeAppStatus(status,callback){
 
-  setTimeout( function(){
+  return new Promise((resolve) => {
 
-    var appStatus = "UPDATE life4controls set varValue = '"+status+"' where varName='appStatus'";
-    connection.query(appStatus, function (error, results) {
-      if (error) throw error;
-      callback(null,results)
 
-    });
-    
-}, 25);
+    setTimeout( function(){
+
+      if (isDebug==true)
+      {
+        console.log("Change Status to " + status);
+        resolve("status changed");
+      }
+      else
+      {
+        var appStatus = "UPDATE life4controls set varValue = '"+status+"' where varName='appStatus'";
+        connection.query(appStatus, function (error, results) {
+          if (error) throw error;
+          resolve(results);
+          callback(null,results);
+
+        });
+      }
+      
+    }, 1000);
+  });
 
 }
 
@@ -396,89 +378,61 @@ function discordSendSubmissionMessage(message,countofgoods,callback)
 
 function discordSendStatusChangeMessage(message,status,callback)
 {
-  setTimeout( function(){
 
-    var messagetext = "";
+  return new Promise((resolve) => {
 
-    if (status == "ON")
-    {
-      messagetext = "The bot has been enabled and will now look for newly approved forms!";
-    }
-    else if (status == "OFF")
-    {
-      messagetext = "The bot has been deactivated! ";
-    }
-    else if (status == "TRIALS")
-    {
-      messagetext = "The bot will now check for new trials!";
-    }
-    else if (status == "PLAYERS")
-    {
-      messagetext = "The bot will now check for new players!";
-    }
-    else if (status == "QUEUE")
-    {
-      messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
-    }
-    else if (status == "TOURNEYSYNC")
-    {
-      messagetext = "spreadsheet sync test";
-    }
-    else if (status == "TOURNEYANNOUNCE")
-    {
-      messagetext = "rr announcement test";
+    setTimeout( function(){
+
+      if (isDebug==true)
+      {
+          console.log("The bot has been updated!");
+          resolve("updated");
+      }
+      else
+      {
+          var messagetext = "";
+
+          if (status == "ON")
+          {
+            messagetext = "The bot has been enabled and will now look for newly approved forms!";
+          }
+          else if (status == "OFF")
+          {
+            messagetext = "The bot has been deactivated! ";
+          }
+          else if (status == "TRIALS")
+          {
+            messagetext = "The bot will now check for new trials!";
+          }
+          else if (status == "PLAYERS")
+          {
+            messagetext = "The bot will now check for new players!";
+          }
+          else if (status == "QUEUE")
+          {
+            messagetext = "The bot will now work through updates in the queue! It will run every 10 minutes!";
+          }
+          else if (status == "TOURNEYSYNC")
+          {
+            messagetext = "spreadsheet sync test";
+          }
+          else if (status == "TOURNEYANNOUNCE")
+          {
+            messagetext = "rr announcement test";
+          }
+
+          message.reply(messagetext);
+          resolve(messagetext);
     }
 
-    message.reply(messagetext);
+  }, 750);
 
-}, 750);
+  });
 
 }
 
 
-function changeAppStatusSequence(status,req,res)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
 
-  }
-
-  console.log("Updating Status!!");
-  var currentStatus = wait.for(changeAppStatus,status);
-  //wait.for(sendTheBoy,res,currentStatus);
-};
-
-function changeAppStatusSequenceDiscord(message,status)
-{
-  if (isDebug == false)
-  {
-  connection = mysql.createConnection({
-    host     : process.env.MYSQLHOST,
-    user     : process.env.MYSQLUSER,
-    password : process.env.MYSQLPW,
-    database : process.env.MYSQLPLAYERDB
-  });
-  connection.connect();
-  }
-  else if (isDebug == true)
-  {
-    
-  }
-
-  console.log("Updating status!");
-  var currentStatus = wait.for(changeAppStatus,status);
-  //wait.for(discordSendStatusChangeMessage,message,status);
-};
 
 
 
@@ -809,9 +763,9 @@ async function ChangeStatus(message,status_type)
   //make connection
   connection = await GetConnection();
   //run query
-
+  const status_update = await changeAppStatus(status_type);
   //report out to discord
-
+  const announce = await discordSendStatusChangeMessage(message,status_type);
 
 }
 
@@ -850,7 +804,7 @@ async function life4actionTime()
     console.log('App is running!!!');
 }
 
-GetSubmissions();
+ChangeStatus(null,"ON");
 
 //life4actionTime();
 //HellAss2();
