@@ -8,7 +8,6 @@ var isDebug = true;
 const fs = require('fs');
 var config = require('./config.js');
 var Discord = require('discord.js');
-//var wait = require('wait.for');
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
@@ -99,6 +98,8 @@ function discordSendStatusMessage(message,app_status)
       if (isDebug==true)
       {
         console.log("Discord Send Message for " + app_status + "!");
+        messagetext = "Debug status test successful!";
+        message.reply(messagetext);
         resolve("message sent !");
       }
       else
