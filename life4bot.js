@@ -3,7 +3,7 @@
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
-var isDebug = true;
+var isDebug = false;
 
 const fs = require('fs');
 var config = require('./config.js');
