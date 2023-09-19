@@ -1,4 +1,8 @@
 # LIFE4 Messenger Bot
+
+## Status
+This app is mainly DEGRAGADED and the logic has been merged into the main DDR bot. I'll probably remove this repo eventually.
+
 ## What is this?
 This is the bot that runs on the discord server and listens for specific activity. This is not the application that is reading and announcing updates!
 The purpose of this application is to enable commands to control the backend logic for admins without having to make a manual database change.
