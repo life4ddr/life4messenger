@@ -3,7 +3,7 @@
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
-var isDebug = false;
+var isDebug = true;
 
 const fs = require('fs');
 var config = require('./config.js');
@@ -15,6 +15,7 @@ const { constants } = require('buffer');
 const { resolve } = require('path');
 
 var bot = new Discord.Client();
+var guild = Discord.GuildMemberManager;
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
 const port = process.env.PORT;
@@ -28,7 +29,6 @@ app.listen(port, () => console.log(`Listening on port ${port}!`));
 //This runs automatically in order to log in on discord and listen to activity
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
-
   });
 
 
@@ -46,6 +46,16 @@ bot.on('ready', () => {
     //GET COMMANDS
     if(msg.includes(bot.user.toString()) && msg.includes('commands')) {
         message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
+    }
+
+    //SET RANK
+    if(msg.includes(bot.user.toString()) && msg.includes('rank')) {
+
+      if (message.channel.id === '596168285477666832')
+      {
+        //const status = GetStatus(message);
+      }
+
     }
     
     //GET STATUS
@@ -88,6 +98,32 @@ bot.on('ready', () => {
 });
 
 
+//Gets username based on UserID
+function GetDiscordUsername()
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const user_name = bot.users.cache.find(u => u.id === '275626417629298691')
+      console.log(user_name.username);
+      resolve(user_name.username);
+    });
+  });
+
+};
+
+
+//Gets UserID based on username
+function GetDiscordUserID()
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const userid = bot.users.cache.find(u => u.username === 'stevesef')
+      console.log(userid.id);
+      resolve(userid.id);
+    });
+  });
+
+};
 
 //send a discord message based on the status of the bot
 function discordSendStatusMessage(message,app_status)
@@ -98,7 +134,7 @@ function discordSendStatusMessage(message,app_status)
       if (isDebug==true)
       {
         console.log("Discord Send Message for " + app_status + "!");
-        messagetext = "Debug status test successful!";
+        messagetext = "Hello <@275626417629298691>";
         message.reply(messagetext);
         resolve("message sent !");
       }
