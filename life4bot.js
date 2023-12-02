@@ -48,12 +48,12 @@ bot.on('ready', () => {
         message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
 
-    //SET RANK
-    if(msg.includes(bot.user.toString()) && msg.includes('rank')) {
+    //SET ROL
+    if(msg.includes(bot.user.toString()) && msg.includes('role')) {
 
       if (message.channel.id === '596168285477666832')
       {
-        //const status = GetStatus(message);
+        const role = GetRole(message);
       }
 
     }
@@ -99,12 +99,13 @@ bot.on('ready', () => {
 
 
 //Gets username based on UserID
-function GetDiscordUsername()
+function GetDiscordUsername(user_id)
 {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const user_name = bot.users.cache.find(u => u.id === '275626417629298691')
-      console.log(user_name.username);
+      //const user_name = bot.users.cache.find(u => u.id === '275626417629298691')
+      const user_name = bot.users.cache.find(u => u.id === user_id)
+      console.log(user_name.username + " found!");
       resolve(user_name.username);
     });
   });
@@ -202,6 +203,33 @@ function getAppStatusFromDB(){
         connection.query(appStatus, function (error, results) {
           if (error) throw error;
           console.log("status retrieved from DB!");
+          resolve(results);
+          return results;
+    
+        });
+      }
+    });
+  }, 5000);
+
+}
+
+//Query the database and retrieve db user_id based on discord username
+function GetUserIdBasedOnDiscordUsername(username){
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      if (isDebug==true)
+      {
+        console.log("We did it fam");
+        resolve("Debug Status!");
+      }
+      else
+      {
+        var appStatus = "select user_id from wp_kikf_usermeta where meta_key='discord_handle' where meta_value='"+username+"'";
+        connection.query(appStatus, function (error, results) {
+          if (error) throw error;
+          console.log("user_id retrieved from db!");
           resolve(results);
           return results;
     
@@ -407,6 +435,29 @@ async function ChangeStatus(message,status_type)
   const announce = await discordSendStatusChangeMessage(message,status_type);
 
 }
+
+//UPDATE ROLE
+async function GetRole(message,user_id)
+{
+
+  //make connection
+  connection = await GetConnection();
+
+  //translate userid to username
+  var username = GetDiscordUsername("asdf");
+
+  //lookup user_id based on username
+  var user_id = GetUserIdBasedOnDiscordUsername(username);
+
+  //lookup rank based on db user_id
+
+  //translate rank to discord rank
+
+  //apply rank
+
+  //announce message
+
+};
 
 //GET STATUS
 async function GetStatus(message)
