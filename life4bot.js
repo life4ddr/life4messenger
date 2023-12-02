@@ -48,7 +48,7 @@ bot.on('ready', () => {
         message.reply('Here are my commands!\nturn on - enable the bot, which will look for new "approved" forms every 10 minutes\nget submissions - get all submissions ready to be reviewed\n status = get status \n check queue - no longer used \n check players - no longer used \n check trials - no longer used \n rr qual - starts the sync job for Rank Royale qualifiers \n rr sync - starts the sync job for the Rank Royale competition across spreadsheets \n rr announce - Does any Rank Royale related announcements \n turn off = disable the bot');
     }
 
-    //SET ROL
+    //SET ROLE
     if(msg.includes(bot.user.toString()) && msg.includes('role')) {
 
       if (message.channel.id === '596168285477666832')
@@ -222,7 +222,7 @@ function GetUserIdBasedOnDiscordUsername(username){
       if (isDebug==true)
       {
         console.log("We did it fam");
-        resolve("Debug Status!");
+        resolve("Debug userid!");
       }
       else
       {
@@ -231,16 +231,52 @@ function GetUserIdBasedOnDiscordUsername(username){
           if (error) throw error;
           console.log("user_id retrieved from db!");
           resolve(results);
-          return results;
     
         });
       }
     });
-  }, 5000);
+  }, 1000);
 
 }
 
-function getSubmissionCount(callback){
+//Query the database and retrieve rank based on user_id
+function GetRankBasedOnUserID(user_id)
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      if (isDebug==true)
+      {
+        console.log("We got a dang rank");
+        resolve("Debug rank!");
+      }
+      else
+      {
+        var appStatus = "select meta_value from wp_kikf_usermeta where meta_key='rank' where user_id="+user_id;
+        connection.query(appStatus, function (error, results) {
+          if (error) throw error;
+          console.log("rank retrieved from db!");
+          resolve(results);
+    
+        });
+      }
+
+
+    });
+  }, 1000);
+};
+
+//Substring function for rank
+function GetSpecificRankString(rank)
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(rank.substring(0, rank.indexOf(" ")));
+    });
+  }, 100);
+}
+
+function getSubmissionCount(){
 
   return new Promise((resolve) => {
     setTimeout( function(){
@@ -256,7 +292,6 @@ function getSubmissionCount(callback){
             connection.query(appStatus, function (error, results) {
               if (error) throw error;
               resolve(result);
-              callback(null,results);
 
             });
         }
@@ -437,23 +472,27 @@ async function ChangeStatus(message,status_type)
 }
 
 //UPDATE ROLE
-async function GetRole(message,user_id)
+async function GetRole(message,discord_user_id)
 {
 
   //make connection
   connection = await GetConnection();
 
   //translate userid to username
-  var username = GetDiscordUsername("asdf");
+  var username = await GetDiscordUsername(discord_user_id);
 
   //lookup user_id based on username
-  var user_id = GetUserIdBasedOnDiscordUsername(username);
+  var user_id =await GetUserIdBasedOnDiscordUsername(username);
 
   //lookup rank based on db user_id
+  var rank = await GetRankBasedOnUserID(user_id);
 
-  //translate rank to discord rank
+  //trim rank
+  var rank_detailed = await GetSpecificRankString(rank);
 
-  //apply rank
+  //translate rank to discord role
+
+  //apply role
 
   //announce message
 
