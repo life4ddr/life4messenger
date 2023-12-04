@@ -112,6 +112,81 @@ function GetDiscordUsername(user_id)
 
 };
 
+//Translate the rank to a relevant role in discord and returns the ID
+function GetRankRoleID(rank)
+{
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      if (rank=="Copper")
+      {
+        resolve("540761963337351168");
+      }
+      else if (rank=="Bronze")
+      {
+        resolve("530613723468005377");
+      }
+      else if (rank=="Silver")
+      {
+        resolve("530614569501065236");
+      }      
+      else if (rank=="Gold")
+      {
+        resolve("530614695514603521");
+      }
+      else if (rank=="Platinum")
+      {
+        resolve("639924914698321921");
+      }
+      else if (rank=="Diamond")
+      {
+        resolve("530614777194610728");
+      }
+      else if (rank=="Cobalt")
+      {
+        resolve("530614851844964352");
+      }
+      else if (rank=="Pearl")
+      {
+        resolve("1088919952238575646");
+      }
+      else if (rank=="Amethyst")
+      {
+        resolve("540750146389016576");
+      }
+      else if (rank=="Emerald")
+      {
+        resolve("592910861589282816");
+      }
+      else if (rank=="Onyx")
+      {
+        resolve("811829706075668516");
+      }
+
+    });
+  });
+}
+
+function ApplyRoleIDToUser(user_id,role_id)
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      resolve("This will be something soon");
+    });
+  });
+}
+
+function DiscordAnnounceRoleApply()
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      resolve("This will be something soon");
+    });
+  });
+}
 
 //Gets UserID based on username
 function GetDiscordUserID()
@@ -484,17 +559,28 @@ async function GetRole(message,discord_user_id)
   //lookup user_id based on username
   var user_id =await GetUserIdBasedOnDiscordUsername(username);
 
+  console.log("Retrieved user info from DB!");
+
   //lookup rank based on db user_id
   var rank = await GetRankBasedOnUserID(user_id);
 
   //trim rank
   var rank_detailed = await GetSpecificRankString(rank);
 
+  console.log("Retrieved rank from DB!");
+
   //translate rank to discord role
+  var role_id = await GetRankRoleID(rank_detailed);
 
   //apply role
+  var apply_role = await ApplyRoleIDToUser(user_id,role_id)
+
+  console.log("Applied role to user!");
 
   //announce message
+  var discord_announce = await DiscordAnnounceRoleApply();
+
+  console.log("Finished!");
 
 };
 
