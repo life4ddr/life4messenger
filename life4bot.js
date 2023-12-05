@@ -37,7 +37,10 @@ bot.on('ready', () => {
   bot.on('message', (message) => {
     
     let myRole = message.guild.roles.cache.get("530615149531365393");
-    
+    var message_author_id = message.author.id;
+    console.log("Author: " + message_author_id);
+
+
     var msg = message.content;
     if (msg.startsWith('<@!')) {
 			msg = msg.replace('!','');
@@ -53,7 +56,7 @@ bot.on('ready', () => {
 
       if (message.channel.id === '596168285477666832')
       {
-        const role = GetRole(message);
+        const role = GetRole(message,message_author_id);
       }
 
     }
@@ -168,10 +171,13 @@ function GetRankRoleID(rank)
   });
 }
 
-function ApplyRoleIDToUser(user_id,role_id)
+function ApplyRoleIDToUser(user_id,role_id,author)
 {
   return new Promise((resolve) => {
     setTimeout(() => {
+
+      author.roles.add(role_id);
+      console.log("Updated!");
 
       resolve("This will be something soon");
     });
@@ -305,6 +311,7 @@ function GetUserIdBasedOnDiscordUsername(username){
         connection.query(appStatus, function (error, results) {
           if (error) throw error;
           console.log("user_id retrieved from db!");
+          console.log(results);
           resolve(results);
     
         });
@@ -331,6 +338,7 @@ function GetRankBasedOnUserID(user_id)
         connection.query(appStatus, function (error, results) {
           if (error) throw error;
           console.log("rank retrieved from db!");
+          console.log(results);
           resolve(results);
     
         });
@@ -567,13 +575,13 @@ async function GetRole(message,discord_user_id)
   //trim rank
   var rank_detailed = await GetSpecificRankString(rank);
 
-  console.log("Retrieved rank from DB!");
+  console.log("Retrieved rank from DB! " + rank_detailed);
 
   //translate rank to discord role
   var role_id = await GetRankRoleID(rank_detailed);
 
   //apply role
-  var apply_role = await ApplyRoleIDToUser(user_id,role_id)
+  var apply_role = await ApplyRoleIDToUser(user_id,role_id,discord_user_id)
 
   console.log("Applied role to user!");
 
