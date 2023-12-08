@@ -226,7 +226,7 @@ function discordSendStatusMessage(message,app_status)
 
           if (app_status == "ON")
           {
-            messagetext = "Status is currently " + app_status +"! The bot is running and looking for approved forms!";
+            messagetext = "Status is currently " + app_status +"! The bot is running and looking for approved forms! Huzzah!";
           }
           else if (app_status == "OFF")
           {
@@ -558,8 +558,6 @@ async function ChangeStatus(message,status_type)
 async function GetRole(message,discord_user_id)
 {
 
-  var opening_msg = await message.reply("I'm gonna try!");
-  
   //make connection
   connection = await GetConnection();
 
