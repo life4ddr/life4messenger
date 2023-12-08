@@ -3,7 +3,7 @@
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
 
 //debug variables
-var isDebug = true;
+var isDebug = false;
 
 const fs = require('fs');
 var config = require('./config.js');
@@ -184,7 +184,7 @@ function ApplyRoleIDToUser(user_id,role_id,author)
   });
 }
 
-function DiscordAnnounceRoleApply()
+function DiscordAnnounceRoleApply(rank)
 {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -586,7 +586,8 @@ async function GetRole(message,discord_user_id)
   console.log("Applied role to user!");
 
   //announce message
-  var discord_announce = await DiscordAnnounceRoleApply();
+  var discord_msg = await message.reply("Your role rank has been applied! You are "+ rank_detailed + "!")
+  //var discord_announce = await DiscordAnnounceRoleApply(rank_detailed);
 
   console.log("Finished!");
 
