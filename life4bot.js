@@ -558,6 +558,8 @@ async function ChangeStatus(message,status_type)
 async function GetRole(message,discord_user_id)
 {
 
+  var opening_msg = await message.reply("I'm gonna try!");
+  
   //make connection
   connection = await GetConnection();
 
