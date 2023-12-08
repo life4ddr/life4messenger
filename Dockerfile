@@ -1,4 +1,3 @@
-# syntax=dcoker/dockerfile:1
 FROM node:18
 WORKDIR /
 COPY package*.json ./
