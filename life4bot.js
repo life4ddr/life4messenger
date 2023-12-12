@@ -18,6 +18,10 @@ var bot = new Discord.Client();
 var guild = Discord.GuildMemberManager;
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
+//channel id's
+const admin_bot_channel = '596168285477666832';
+const early_access_channel = '537545868975538208';
+
 const port = process.env.PORT;
 var connection;
 
@@ -54,7 +58,7 @@ bot.on('ready', () => {
     //SET ROLE
     if(msg.includes(bot.user.toString()) && msg.includes('role')) {
 
-      if (message.channel.id === '596168285477666832')
+      if (message.channel.id === admin_bot_channel)
       {
         const role = GetRole(message,message_author_id);
       }
@@ -64,7 +68,7 @@ bot.on('ready', () => {
     //GET STATUS
     if(msg.includes(bot.user.toString()) && msg.includes('status')) {
 
-      if (message.channel.id === '596168285477666832')
+      if (message.channel.id === admin_bot_channel)
       {
         const status = GetStatus(message);
       }
@@ -73,7 +77,7 @@ bot.on('ready', () => {
 
     //GET NUMBER OF NEW SUBMISSIONS IN QUEUE
     if(msg.includes(bot.user.toString()) && msg.includes('get submissions')) {
-      if (message.channel.id === '596168285477666832')
+      if (message.channel.id === admin_bot_channel)
       {
         const submissions = GetSubmissions(message);
       }
@@ -82,7 +86,7 @@ bot.on('ready', () => {
     //TURN ON
     if(msg.includes(bot.user.toString()) && msg.includes('turn on')) {
 
-      if (message.channel.id === '596168285477666832')
+      if (message.channel.id === admin_bot_channel)
       {
         const status_update = ChangeStatus(message,"ON");
       }
@@ -92,7 +96,7 @@ bot.on('ready', () => {
     //TURN OFF
     if(msg.includes(bot.user.toString()) && msg.includes('turn off')) {
 
-      if (message.channel.id === '596168285477666832')
+      if (message.channel.id === admin_bot_channel)
       {
         const status_update = ChangeStatus(message,"OFF");
       }
