@@ -562,37 +562,50 @@ async function ChangeStatus(message,status_type)
 async function GetRole(message,discord_user_id)
 {
 
-  //make connection
-  connection = await GetConnection();
+    //make connection
+    connection = await GetConnection();
 
-  //translate userid to username
-  var username = await GetDiscordUsername(discord_user_id);
+    //translate userid to username
+    var username = await GetDiscordUsername(discord_user_id);
 
-  //lookup user_id based on username
-  var user_id =await GetUserIdBasedOnDiscordUsername(username);
+    //lookup user_id based on username
+    var user_id =await GetUserIdBasedOnDiscordUsername(username);
 
-  console.log("Retrieved user info from DB!");
 
-  //lookup rank based on db user_id
-  var rank = await GetRankBasedOnUserID(user_id);
+    //if username is found
+    if (user_id != null)
+    {
+      console.log("Retrieved user info from DB!");
 
-  //trim rank
-  var rank_detailed = await GetSpecificRankString(rank);
+      //lookup rank based on db user_id
+      var rank = await GetRankBasedOnUserID(user_id);
 
-  console.log("Retrieved rank from DB! " + rank_detailed);
+      //trim rank
+      var rank_detailed = await GetSpecificRankString(rank);
 
-  //translate rank to discord role
-  var role_id = await GetRankRoleID(rank_detailed);
+      console.log("Retrieved rank from DB! " + rank_detailed);
 
-  //apply role
-  var apply_role = await ApplyRoleIDToUser(user_id,role_id,discord_user_id)
+      //translate rank to discord role
+      var role_id = await GetRankRoleID(rank_detailed);
 
-  console.log("Applied role to user!");
+      //apply role
+      var apply_role = await ApplyRoleIDToUser(user_id,role_id,discord_user_id)
 
-  //announce message
-  var discord_msg = await message.reply("Your role rank has been applied! You are "+ rank_detailed + "!")
-  //var discord_announce = await DiscordAnnounceRoleApply(rank_detailed);
+      console.log("Applied role to user!");
 
+      //announce message
+      var discord_msg = await message.reply("Your role rank has been applied! You are "+ rank_detailed + "!")
+      //var discord_announce = await DiscordAnnounceRoleApply(rank_detailed);
+  }
+  //if can't be found
+  else
+  {
+    console.log("Couldn't find username in database!");
+    
+    //announce message
+    var discord_msg = await message.reply("I'm sorry, I couldn't find your LIFE4 profile. Make sure your discord username is correct in your profile!")
+  
+  }
   console.log("Finished!");
 
 };
