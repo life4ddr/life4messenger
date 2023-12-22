@@ -175,6 +175,19 @@ function GetRankRoleID(rank)
   });
 }
 
+function RemoveAllOldRoles(user_id, author)
+{
+  return new Promise((resolve) => {
+    setTimeout(() => {
+
+      //TODO
+
+      console.log("It is done!");
+      resolve("done!");
+    });
+  });
+}
+
 function ApplyRoleIDToUser(user_id,role_id,author)
 {
   return new Promise((resolve) => {
@@ -588,6 +601,9 @@ async function GetRole(message,discord_user_id)
       //translate rank to discord role
       var role_id = await GetRankRoleID(rank_detailed);
 
+      //remove old roles - this does nothing right now
+      var old_roles = await RemoveAllOldRoles(user_id,discord_user_id);
+
       //apply role
       var apply_role = await ApplyRoleIDToUser(user_id,role_id,discord_user_id)
 
@@ -601,7 +617,7 @@ async function GetRole(message,discord_user_id)
   else
   {
     console.log("Couldn't find username in database!");
-    
+
     //announce message
     var discord_msg = await message.reply("I'm sorry, I couldn't find your LIFE4 profile. Make sure your discord username is correct in your profile!")
   
