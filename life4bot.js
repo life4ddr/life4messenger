@@ -16,7 +16,7 @@ const express = require('express');
 const { constants } = require('buffer');
 const { resolve } = require('path');
 
-var bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+var bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_EMOJIS] });
 var guild = Discord.GuildMemberManager;
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
