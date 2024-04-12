@@ -8,13 +8,15 @@ var isDebug = false;
 const fs = require('fs');
 var config = require('./config.js');
 var Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
+
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
 const { constants } = require('buffer');
 const { resolve } = require('path');
 
-var bot = new Discord.Client();
+var bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 var guild = Discord.GuildMemberManager;
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
