@@ -10,7 +10,7 @@ var isDebug = false;
 const fs = require('fs');
 var config = require('./config.js');
 const Discord = require('discord.js');
-const GatewayIntentBits = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
 var mysql = require('mysql');
 require('dotenv').config();
@@ -18,13 +18,20 @@ const express = require('express');
 const { constants } = require('buffer');
 const { resolve } = require('path');
 
-const bot = new Discord.Client({ intents: [		
+const bot = new Client({ intents: [		
+  Intents.FLAGS.GUILDS,
+  Intents.FLAGS.GUILD_MESSAGES,
+  Intents.FLAGS.GUILD_MEMBERS]
+ });
+
+ /*
+const bot = new Client({ intents: [		
   GatewayIntentBits.Guilds,
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.MessageContent,
-  GatewayIntentBits.GuildMembers,],
+  GatewayIntentBits.GuildMembers]
  });
-
+*/
   
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
