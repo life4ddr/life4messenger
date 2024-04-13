@@ -1,6 +1,8 @@
 //LIFE4 MESSENGER - PART OF DDR BOT
 //Refer to the README.md for more details about functionality
-//Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2023
+//This code is primarily used for the interaction with the bot on discord
+//Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2024
+
 
 //debug variables
 var isDebug = false;
@@ -8,6 +10,7 @@ var isDebug = false;
 const fs = require('fs');
 var config = require('./config.js');
 const Discord = require('discord.js');
+const GatewayIntentBits = require('discord.js');
 
 var mysql = require('mysql');
 require('dotenv').config();
@@ -16,10 +19,11 @@ const { constants } = require('buffer');
 const { resolve } = require('path');
 
 const bot = new Discord.Client({ intents: [		
-  Discord.GatewayIntentBits.Guilds,
-  Discord.GatewayIntentBits.GuildMessages,
-  Discord.GatewayIntentBits.MessageContent,
-  Discord.GatewayIntentBits.GuildMembers,] });
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.MessageContent,
+  GatewayIntentBits.GuildMembers,],
+ });
 
   
 bot.login(process.env.DISCORD_BOT_TOKEN);
