@@ -7,8 +7,7 @@ var isDebug = false;
 
 const fs = require('fs');
 var config = require('./config.js');
-var Discord = require('discord.js');
-const { Client, GatewayIntentBits  } = require('discord.js');
+const Discord = require('discord.js');
 
 var mysql = require('mysql');
 require('dotenv').config();
@@ -16,13 +15,13 @@ const express = require('express');
 const { constants } = require('buffer');
 const { resolve } = require('path');
 
-var bot = new Client({ intents: [		
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMessages,
-  GatewayIntentBits.MessageContent,
-  GatewayIntentBits.GuildMembers,] });
+const bot = new Discord.Client({ intents: [		
+  Discord.GatewayIntentBits.Guilds,
+  Discord.GatewayIntentBits.GuildMessages,
+  Discord.GatewayIntentBits.MessageContent,
+  Discord.GatewayIntentBits.GuildMembers,] });
+
   
-var guild = Discord.GuildMemberManager;
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
 //channel id's
