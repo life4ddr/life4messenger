@@ -5,12 +5,13 @@
 
 
 //debug variables
-var isDebug = false;
+var isDebug = true;
 
 const fs = require('fs');
 var config = require('./config.js');
 //const Discord = require('discord.js');
-const { Client, Intents, GatewayIntentBits  } = require('discord.js');
+
+//const { Client, Events, GatewayIntentBits  } = require('discord.js');
 
 var mysql = require('mysql');
 require('dotenv').config();
@@ -26,13 +27,19 @@ const bot = new Client({ intents: [
  });
 */
 
+/*
+console.log(GatewayIntentBits.Guilds);
+console.log(GatewayIntentBits.GuildMembers);
+console.log(GatewayIntentBits.MessageContent);
+
 const bot = new Client({ intents: [		
   GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMembers,
-  GatewayIntentBits.MessageContent
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.MessageContent,
+  GatewayIntentBits.GuildMembers
 ]
  });
-
+*/
   
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
