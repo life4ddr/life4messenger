@@ -15,8 +15,6 @@ const { Client, Events, GatewayIntentBits  } = require('discord.js');
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
-const { constants } = require('buffer');
-const { resolve } = require('path');
 
 /*
 const bot = new Client({ intents: [		
@@ -26,19 +24,18 @@ const bot = new Client({ intents: [
  });
 */
 
+const bot = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers,
+	],
+});
 
 console.log(GatewayIntentBits.Guilds);
 console.log(GatewayIntentBits.GuildMembers);
 console.log(GatewayIntentBits.MessageContent);
-
-const bot = new Client({ intents: [		
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMessages,
-  GatewayIntentBits.MessageContent,
-  GatewayIntentBits.GuildMembers
-]
- });
-
   
 bot.login(process.env.DISCORD_BOT_TOKEN);
 
@@ -55,15 +52,22 @@ app.listen(port, () => console.log(`Listening on port ${port}!`));
 
 //BOT LOG IN
 //This runs automatically in order to log in on discord and listen to activity
+/*
 bot.on('ready', () => {
     console.log(`Logged in as ${bot.user.tag}!`);
   });
+*/
 
+  bot.once(Events.ClientReady, readyClient => {
+    console.log(`Ready! Logged in as ${bot.user.tag}`);
+  });
 
 //BOT LISTEN FOR MESSAGES
 //Listener that reacts to commands when the bot is mentioned
   bot.on('message', (message) => {
     
+    console.log("aha, a message!");
+
     let myRole = message.guild.roles.cache.get("530615149531365393");
     var message_author_id = message.author.id;
     console.log("Author: " + message_author_id);
