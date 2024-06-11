@@ -8,5 +8,8 @@
 #creds
 credentials.json
 
+#deploy script
+deploy-commands.js
+
 #workspace
 life4workspace.code-workspace
