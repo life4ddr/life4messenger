@@ -3,6 +3,11 @@
 //This code is primarily used for the interaction with the bot on discord
 //Created by Steve Sefchick for use by the LIFE4 Admin Team - 2020-2024
 
+//TODO
+//ADD STATUS SLASH COMMAND
+//ADD ENABLE SLASH COMMAND
+//ADD DISABLE SLASH COMMAND
+//ADD ROLE SLASH COMMAND
 
 //debug variables
 var isDebug = true;
