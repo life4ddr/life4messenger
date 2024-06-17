@@ -15,6 +15,7 @@ var isDebug = true;
 const fs = require('fs');
 const path = require('node:path');
 var config = require('./config.js');
+var connection_test = require('./connection.js');
 var mysql = require('mysql');
 require('dotenv').config();
 const express = require('express');
