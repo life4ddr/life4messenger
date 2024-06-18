@@ -8,9 +8,10 @@
 //ADD ENABLE SLASH COMMAND
 //ADD DISABLE SLASH COMMAND
 //ADD ROLE SLASH COMMAND
+//MAKE ISDEBUG GLOBAL
 
 //debug variables
-var isDebug = true;
+var isDebug = false;
 
 const fs = require('fs');
 const path = require('node:path');
@@ -55,14 +56,6 @@ for (const folder of commandFolders) {
 }
 
 
-/*
-const bot = new Client({ intents: [		
-  Intents.FLAGS.GUILDS,
-  Intents.FLAGS.GUILD_MESSAGES,
-  Intents.FLAGS.GUILD_MEMBERS]
- });
-*/
-
 
 //channel id's
 const admin_bot_channel = '596168285477666832';
@@ -76,12 +69,6 @@ app.listen(port, () => console.log(`Listening on port ${port}!`));
 
 
 //BOT LOG IN
-//This runs automatically in order to log in on discord and listen to activity
-/*
-bot.on('ready', () => {
-    console.log(`Logged in as ${bot.user.tag}!`);
-  });
-*/
 
   bot.once(Events.ClientReady, readyClient => {
     console.log(`Ready! Logged in as ${bot.user.tag}`);

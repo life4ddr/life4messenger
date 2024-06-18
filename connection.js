@@ -1,6 +1,5 @@
 var mysql = require('mysql');
-//debug variables
-var isDebug = true;
+
 
 
 //Make a database connection

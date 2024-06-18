@@ -1,5 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js');
-var connection_test = require('./connection.js');
+var connection_test = require('../../connection.js');
+
+
+//channel id's
+const admin_bot_channel = '596168285477666832';
+const early_access_channel = '537545868975538208';
+
 
 /*
 function testfunc(){
