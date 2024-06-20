@@ -8,10 +8,10 @@
 //ADD ENABLE SLASH COMMAND
 //ADD DISABLE SLASH COMMAND
 //ADD ROLE SLASH COMMAND
-//MAKE ISDEBUG GLOBAL
 
 //debug variables
-var isDebug = false;
+var debugFlags = require('./flags.js');
+var isDebug = debugFlags.isDebugMode;
 
 const fs = require('fs');
 const path = require('node:path');
