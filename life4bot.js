@@ -10,7 +10,7 @@
 //ADD ROLE SLASH COMMAND
 
 //debug variables
-var debugFlags = require('./flags.js');
+var debugFlags = require('./feature_flags.js');
 var isDebug = debugFlags.isDebugMode;
 
 const fs = require('fs');
