@@ -1,5 +1,8 @@
 var mysql = require('mysql');
 
+//debug variables
+var debugFlags = require('./feature_flags.js');
+var isDebug = debugFlags.isDebugMode;
 
 
 //Make a database connection

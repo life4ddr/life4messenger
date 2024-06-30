@@ -57,7 +57,7 @@ async function GetStatus()
   //run query
   const app_status = await getAppStatusFromDB();
   //announce message
-  const announce = await discordSendStatusMessage(message,app_status);
+  const announce = await discordSendStatusMessage(app_status);
 };
 
 //send a discord message based on the status of the bot
@@ -70,8 +70,8 @@ function discordSendStatusMessage(app_status)
       {
         console.log("Discord Send Message for " + app_status + "!");
         messagetext = "Hello <@275626417629298691>";
-        message.reply(messagetext);
-        resolve("message sent !");
+        //message.reply(messagetext);
+        resolve("test status message!");
       }
       else
       {
@@ -111,7 +111,7 @@ function discordSendStatusMessage(app_status)
           }
 
 
-          message.reply(messagetext);
+          //message.reply(messagetext);
           resolve(messagetext);
     }
 
@@ -125,8 +125,9 @@ module.exports = {
 		.setName('status')
 		.setDescription('Replies with the status of the LIFE4 bot. Primarily for admin use.'),
 	async execute(interaction) {
-        var get_status = await GetStatus();
-        console.log(get_status);
-		await interaction.reply('test');
+    var get_status = await GetStatus();
+    console.log(get_status);
+    await interaction.reply('test status');
+		//await interaction.reply(GetStatus());
 	},
 };
